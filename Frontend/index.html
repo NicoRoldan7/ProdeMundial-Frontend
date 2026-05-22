@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRODE Mundial 2026</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+    <div id="pantalla-login">
+        <section class="tarjeta-login">
+            <div class="icono-copa">🏆</div>
+            <h2>INGRESO AL PRODE</h2>
+            <p></p>
+            
+            <form id="form-login">
+                <div class="grupo-input">
+                    <label for="login-user">Usuario:</label>
+                    <input type="text" id="login-user" autocomplete="off" placeholder="Ej: admin" required>
+                </div>
+                <div class="grupo-input">
+                    <label for="login-pass">Contraseña:</label>
+                    <input type="password" id="login-pass" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-guardar">INGRESAR</button>
+            </form>
+        </section>
+    </div>
+
+    <div id="pantalla-juego" style="display: none;">
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: center; max-width: 850px; margin: 0 auto; padding: 0 1rem;">
+                <div style="text-align: left;">
+                    <h1>PRODE MUNDIAL 2026</h1>
+                    <p style="color: #ffffff; opacity: 0.9;">Cargá tus pronósticos y sumá puntos</p>
+                </div>
+                <button id="btn-cerrar-sesion" class="btn-salir">Cerrar Sesión 🚪</button>
+            </div>
+            
+            <div style="margin-top: 1.5rem; display: flex; justify-content: center; align-items: center; gap: 10px;">
+                <label for="select-usuario-activo" style="font-weight: bold; color: #fbbf24;">JUGADOR ACTIVO:</label>
+                <select id="select-usuario-activo" style="width: auto; min-width: 200px;">
+                    </select>
+            </div>
+        </header>
+
+        <main class="contenedor">
+            <section class="seccion-lista">
+                <h2>⚽ FIXTURE Y PRONÓSTICOS</h2>
+                <div id="contenedor-partidos">
+                    <p class="cargando">Seleccioná tu usuario arriba para ver el fixture...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

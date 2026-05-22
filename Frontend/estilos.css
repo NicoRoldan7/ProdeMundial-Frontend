@@ -1,0 +1,287 @@
+/* ==========================================================================
+   🏆 ESTILOS PRODE MUNDIAL 2026 - VERSIÓN FINAL CON IMAGEN REAL EN WIKIPEDIA
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Graduate&family=Outfit:wght@400;600;800;900&display=swap');
+
+:root {
+    --bg-principal: #062417; 
+    --bg-tarjeta: #0b3924;    
+    --borde: #165b3b;
+    --dorado: #fbbf24;       
+    --dorado-hover: #f59e0b;
+    --texto-principal: #ffffff;
+    --texto-secundario: #a7f3d0; 
+    --exito: #10b981;
+    --alerta: #ef4444;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', sans-serif;
+}
+
+body {
+    background-color: var(--bg-principal);
+    color: var(--texto-principal);
+    min-height: 100vh;
+}
+
+/* 📥 CONTENEDOR DE JUEGO */
+.contenedor {
+    max-width: 850px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+header {
+    background: linear-gradient(180deg, #09311f 0%, #062417 100%);
+    padding: 2rem 1rem;
+    border-bottom: 4px solid var(--dorado);
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.6);
+}
+
+header h1 {
+    font-family: 'Graduate', serif; 
+    font-size: 2.2rem;
+    color: var(--dorado);
+    text-shadow: 0 3px 6px rgba(0, 0, 0, 0.8);
+}
+/* 🔐 PANTALLA LOGIN COMPLETA - EDICIÓN COPA DEL MUNDO */
+#pantalla-login {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    z-index: 9999;
+    
+    /* 🏆 Imagen oficial con la copa al costado y filtro oscuro profesional */
+    background: linear-gradient(rgba(4, 23, 14, 0.4), rgba(6, 36, 23, 0.55)), 
+                url('fondoMundial.jpg') no-repeat center center;
+    background-size: cover;
+}
+
+/* Cajita de Login */
+.tarjeta-login {
+    background: rgba(11, 57, 36, 0.95); 
+    backdrop-filter: blur(10px); 
+    border: 2px solid var(--dorado);
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
+    text-align: center;
+}
+
+.icono-copa {
+    font-size: 3.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.tarjeta-login h2 {
+    font-family: 'Graduate', serif;
+    font-size: 1.6rem;
+    color: var(--dorado);
+    margin-bottom: 0.2rem;
+}
+
+.tarjeta-login p {
+    color: #ffffff;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+/* 🗂️ COMPONENTES DE FORMULARIO */
+.grupo-input {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.grupo-input label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--dorado);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.grupo-input input[type="text"],
+.grupo-input input[type="password"],
+select {
+    width: 100%;
+    padding: 0.85rem 1.2rem;
+    background-color: #04170e;
+    border: 2px solid var(--borde);
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.grupo-input input:focus, select:focus {
+    outline: none;
+    border-color: var(--dorado);
+}
+
+/* 🔘 BOTONES */
+.btn-guardar {
+    width: 100%;
+    padding: 0.9rem 1.5rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 900;
+    color: #062417; 
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.btn-guardar:hover {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    transform: translateY(-1px);
+}
+
+.btn-salir {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-salir:hover {
+    background-color: #b91c1c;
+}
+
+/* ⚽ TARJETAS DE PARTIDOS DINÁMICOS */
+.seccion-lista h2 {
+    font-family: 'Graduate', serif;
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    color: #ffffff;
+    border-left: 5px solid var(--dorado);
+    padding-left: 10px;
+}
+
+.tarjeta-formulario {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #0b3924 0%, #082d1c 100%) !important;
+    border: 1px solid var(--borde) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    color: white !important;
+}
+
+.tarjeta-formulario input[type="number"] {
+    width: 60px !important;
+    height: 40px !important;
+    background: #04170e !important;
+    border: 2px solid var(--dorado) !important;
+    border-radius: 8px !important;
+    color: #ffffff !important;
+    font-size: 1.3rem !important;
+    font-weight: 900 !important;
+    text-transform: scale(1);
+    text-align: center !important;
+}
+
+.cargando {
+    text-align: center;
+    padding: 2.5rem;
+    color: var(--texto-secundario);
+    font-weight: 600;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* ==========================================================================
+   📱 ADAPTACIÓN RESPONSIVA PARA CELULARES (Media Query)
+   ========================================================================== */
+
+@media (max-width: 600px) {
+    /* 1. Achicamos el título del Header para que no ocupe media pantalla */
+    header h1 {
+        font-size: 1.6rem;
+    }
+    header p {
+        font-size: 0.9rem;
+    }
+    
+    header div {
+        flex-direction: column; /* El botón de cerrar sesión va abajo del título */
+        gap: 10px;
+        text-align: center !important;
+    }
+
+    /* 2. El Login ocupa casi todo el ancho en el celular para aprovechar espacio */
+    .tarjeta-login {
+        padding: 2rem 1.5rem;
+        margin: 10px;
+        max-width: 100%;
+    }
+    
+    .icono-copa {
+        font-size: 2.8rem;
+    }
+
+    /* 3. ¡LA CLAVE DEL FIXTURE! Reacomodamos las filas de los partidos */
+    #contenedor-partidos .tarjeta-formulario {
+        flex-direction: column !important; /* Pasamos de horizontal a vertical */
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.8rem !important;
+        padding: 1.5rem 1rem !important;
+    }
+
+    /* Local y Visitante se centran */
+    #contenedor-partidos .tarjeta-formulario > div:nth-child(1),
+    #contenedor-partidos .tarjeta-formulario > div:nth-child(3) {
+        text-align: center !important;
+        justify-content: center !important;
+        flex-direction: column !important; /* Escudo arriba, nombre abajo */
+        gap: 5px !important;
+        width: 100%;
+    }
+
+    /* El bloque de los inputs de goles ("vs") */
+    #contenedor-partidos .tarjeta-formulario > div:nth-child(2) {
+        margin: 5px 0;
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* El botón de 'Arriesgar / Actualizar' ocupa todo el ancho abajo */
+    #contenedor-partidos .tarjeta-formulario > div:nth-child(4) {
+        width: 100%;
+    }
+    
+    #contenedor-partidos .btn-guardar {
+        width: 100% !important;
+        padding: 0.75rem !important;
+    }
+}
