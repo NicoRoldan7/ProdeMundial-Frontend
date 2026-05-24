@@ -75,11 +75,10 @@ async function cargarTableroPartidos() {
     }
 
     try {
-        // CORRECCIÓN: Ahora traemos Partidos, Equipos Y las Predicciones de este usuario en paralelo
         const [resPartidos, resEquipos, resPredicciones] = await Promise.all([
             fetch(`${BASE_URL}/partidos`),
             fetch(`${BASE_URL}/equipos`),
-            fetch(`${BASE_URL}/predicciones?uId=${usuarioId}`) // Le pedimos sus jugadas a la API
+            fetch(`${BASE_URL}/predicciones?uId=${usuarioId}`)
         ]);
 
         const partidos = await resPartidos.json();
@@ -87,33 +86,34 @@ async function cargarTableroPartidos() {
         const prediccionesUsuario = await resPredicciones.json();
 
         const mapaEquipos = {};
-        equipos.forEach(e => mapaEquipos[e.id] = e);
+        // .NET devuelve 'id' en minúscula
+        equipos.forEach(e => mapaEquipos[e.id] = e); 
 
-        // Armamos un mapa rápido de predicciones usando el PartidoId como llave
         const mapaPredicciones = {};
-        prediccionesUsuario.forEach(p => mapaPredicciones[p.partidoId] = p);
+        // .NET devuelve 'partidoId' en camelCase
+        prediccionesUsuario.forEach(p => mapaPredicciones[p.partidoId] = p); 
 
         contenedor.innerHTML = "";
 
         if (partidos.length === 0) {
-            contenedor.innerHTML = `<p class="cargando">No hay partidos cargados en la API. Cargalos desde Swagger.</p>`;
+            contenedor.innerHTML = `<p class="cargando">No hay partidos cargados en la API. Cargalos desde Supabase.</p>`;
             return;
         }
 
         partidos.forEach(partido => {
+            // CORRECCIÓN: .NET manda 'localId' y 'visitanteId' en camelCase
             const local = mapaEquipos[partido.localId] || { nombre: "Local", logoUrl: "" };
             const visitante = mapaEquipos[partido.visitanteId] || { nombre: "Visitante", logoUrl: "" };
 
-            // Nos fijamos si este usuario ya tiene una jugada guardada para este partido
-            const jugadaExistente = mapaPredicciones[partido.id];
+            // CORRECCIÓN: .NET manda 'id' en minúscula
+            const jugadaExistente = mapaPredicciones[partido.id]; 
             
-            // Si ya votó, usamos sus goles; si no, arranca en 0
-            const golesLocalDefault = jugadaExistente ? jugadaExistente.golesLocal : 0;
-            const golesVisitanteDefault = jugadaExistente ? jugadaExistente.golesVisitante : 0;
+            // CORRECCIÓN: Cambiado a 'golesLocalVoto' y 'golesVisitanteVoto' como tus DTOs de C#
+            const golesLocalDefault = jugadaExistente ? jugadaExistente.golesLocalVoto : 0;
+            const golesVisitanteDefault = jugadaExistente ? jugadaExistente.golesVisitanteVoto : 0;
             
-            // Si ya tiene jugada, le cambiamos el color al botón para que sepa que ya está guardado
             const textoBoton = jugadaExistente ? "Actualizar" : "Arriesgar";
-            const colorBoton = jugadaExistente ? "#059669" : "#0ea5e9"; // Verde si ya existe, azul si es nuevo
+            const colorBoton = jugadaExistente ? "#059669" : "#0ea5e9"; 
 
             const fila = document.createElement("div");
             fila.className = "tarjeta-formulario";
