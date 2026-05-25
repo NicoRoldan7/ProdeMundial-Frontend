@@ -191,6 +191,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     // =========================================================================
 
+    // =========================================================================
+    // 📥 BOTÓN GLOBAL DE GUARDAR PREDICCIÓN (NUEVO)
+    // =========================================================================
+    const btnGuardarGlobal = document.getElementById("btn-guardar-prediccion-global");
+    if (btnGuardarGlobal) {
+        btnGuardarGlobal.addEventListener("click", guardarPrediccionGlobal);
+    }
+    // =========================================================================
+
     // Chequear sesión persistente al iniciar (Fix F5)
     verificarSesionExistente();
 });
@@ -314,14 +323,18 @@ function cerrarSesion() {
     document.getElementById("vista-login").style.display = "block";
 }
 
-// 2. DIBUJAR EL FIXTURE FILTRADO POR PESTAÑAS
+// 2. DIBUJAR EL FIXTURE FILTRADO POR PESTAÑAS (Modificado para remover botones individuales)
 async function cargarTableroPartidos() {
     const contenedor = document.getElementById("contenedor-partidos");
+    const btnGlobalContainer = document.querySelector(".contenedor-boton-global");
     const usuarioGuardado = localStorage.getItem("usuarioProde");
     if (!usuarioGuardado) return;
     
     const usuario = JSON.parse(usuarioGuardado);
     const usuarioId = usuario.id || 1; 
+
+    // Ocultar botón global en secciones que no corresponden a fechas de juego
+    if (btnGlobalContainer) btnGlobalContainer.style.display = "none";
 
     if (pestañaActiva === "general") {
         contenedor.innerHTML = `
@@ -384,6 +397,9 @@ async function cargarTableroPartidos() {
             return;
         }
 
+        // Si hay partidos para pronosticar, mostramos el botón de guardar abajo de todo
+        if (btnGlobalContainer) btnGlobalContainer.style.display = "flex";
+
         partidosFiltrados.forEach(partido => {
             const local = mapaEquipos[partido.localId] || { nombre: "Local", logoUrl: "" };
             const visitante = mapaEquipos[partido.visitanteId] || { nombre: "Visitante", logoUrl: "" };
@@ -391,32 +407,26 @@ async function cargarTableroPartidos() {
             const jugadaExistente = mapaPredicciones[partido.id]; 
             const golesLocalDefault = jugadaExistente ? jugadaExistente.golesLocalVoto : 0;
             const golesVisitanteDefault = jugadaExistente ? jugadaExistente.golesVisitanteVoto : 0;
-            
-            const textoBoton = jugadaExistente ? "Actualizar" : "Arriesgar";
-            const claseBoton = jugadaExistente ? "btn-guardar btn-actualizar" : "btn-guardar"; 
 
             const fila = document.createElement("div");
             fila.className = "tarjeta-formulario";
+            fila.setAttribute("data-partido-id", partido.id); // Identificador clave para juntar los datos
             fila.style = "margin-bottom: 16px;"; 
             
+            // Renderizado limpito sin el bloque-accion de cada tarjeta
             fila.innerHTML = `
                 <div class="bloque-equipo local">
                     <span class="nombre-equipo">${local.nombre}</span>
                     <img src="${local.logoUrl}" onerror="this.src='https://placehold.co/40?text=⚽'" class="escudo">
                 </div>
                 <div class="bloque-goles">
-                    <input type="number" id="pred-local-${partido.id}" min="0" value="${golesLocalDefault}">
+                    <input type="number" class="input-goles-local" data-partido="${partido.id}" min="0" value="${golesLocalDefault}">
                     <span class="versus">VS</span>
-                    <input type="number" id="pred-visitante-${partido.id}" min="0" value="${golesVisitanteDefault}">
+                    <input type="number" class="input-goles-visitante" data-partido="${partido.id}" min="0" value="${golesVisitanteDefault}">
                 </div>
                 <div class="bloque-equipo visitante">
                     <img src="${visitante.logoUrl}" onerror="this.src='https://placehold.co/40?text=⚽'" class="escudo">
                     <span class="nombre-equipo">${visitante.nombre}</span>
-                </div>
-                <div class="bloque-accion">
-                    <button class="${claseBoton}" onclick="guardarPrediccion('${partido.id}')">
-                        ${textoBoton}
-                    </button>
                 </div>
             `;
             contenedor.appendChild(fila);
@@ -428,8 +438,8 @@ async function cargarTableroPartidos() {
     }
 }
 
-// 3. GUARDAR JUGADA EN LA API
-async function guardarPrediccion(partidoId) {
+// 3. NUEVA FUNCIÓN GLOBAL: JUNTA TODO EL FIXTURE Y GUARDA LA FECHA COMPLETA EN LA API
+async function guardarPrediccionGlobal() {
     const usuarioGuardado = localStorage.getItem("usuarioProde");
     if (!usuarioGuardado) {
         alert("⚠️ No se detectó una sesión activa. Volvé a ingresar.");
@@ -439,31 +449,70 @@ async function guardarPrediccion(partidoId) {
     const usuario = JSON.parse(usuarioGuardado);
     const usuarioId = usuario.id;
 
-    const golesLocal = parseInt(document.getElementById(`pred-local-${partidoId}`).value);
-    const golesVisitante = parseInt(document.getElementById(`pred-visitante-${partidoId}`).value);
+    // Buscamos todas las tarjetas de partidos renderizadas actualmente
+    const tarjetas = document.querySelectorAll(".tarjeta-formulario[data-partido-id]");
+    
+    if (tarjetas.length === 0) {
+        alert("No hay partidos para guardar.");
+        return;
+    }
+
+    // Desactivamos el botón temporalmente para que no hagan doble click furioso
+    const btnGlobal = document.getElementById("btn-guardar-prediccion-global");
+    if(btnGlobal) {
+        btnGlobal.disabled = true;
+        btnGlobal.innerText = "GUARDANDO... ⏳";
+    }
+
+    const peticiones = [];
+
+    // Barremos cada tarjeta, sacamos los goles ingresados y preparamos las llamadas fetch
+    tarjetas.forEach(tarjeta => {
+        const partidoId = tarjeta.getAttribute("data-partido-id");
+        const inputLocal = tarjeta.querySelector(".input-goles-local");
+        const inputVisitante = tarjeta.querySelector(".input-goles-visitante");
+
+        if (inputLocal && inputVisitante) {
+            const golesLocal = parseInt(inputLocal.value) || 0;
+            const golesVisitante = parseInt(inputVisitante.value) || 0;
+
+            // Agregamos la promesa al array
+            const p = fetch(`${BASE_URL}/predicciones`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    usuarioId: usuarioId,
+                    partidoId: partidoId,
+                    golesLocalVoto: golesLocal,
+                    golesVisitanteVoto: golesVisitante
+                })
+            });
+            peticiones.push(p);
+        }
+    });
 
     try {
-        const res = await fetch(`${BASE_URL}/predicciones`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                usuarioId: usuarioId,
-                partidoId: partidoId,
-                golesLocalVoto: golesLocal,
-                golesVisitanteVoto: golesVisitante
-            })
-        });
+        // Disparamos todos los fetch juntos en paralelo para máxima velocidad
+        const respuestas = await Promise.all(peticiones);
+        
+        // Verificamos si al menos todas las respuestas volvieron con estado OK
+        const todoOk = respuestas.every(res => res.ok);
 
-        if (res.ok) {
-            const data = await res.json();
-            alert(`✅ ${data.mensaje}\nResultado: ${golesLocal} - ${golesVisitante}`);
+        if (todoOk) {
+            alert("✅ ¡Todas tus predicciones de la fecha se guardaron con éxito! 🏆");
+            cargarTableroPartidos(); // Recargamos para refrescar datos limpios
         } else {
-            const err = await res.text();
-            alert("❌ Error al guardar: " + err);
+            alert("⚠️ Algunas predicciones no se pudieron procesar bien. Revisá e intentalo de nuevo.");
         }
     } catch (error) {
-        console.error("Error en la conexión:", error);
-        alert("No se pudo conectar con el servidor para guardar tu jugada.");
+        console.error("Error al guardar predicciones globales:", error);
+        alert("Hubo un problema de red al intentar mandar los pronósticos.");
+    } finally {
+        // Volvemos el botón a la normalidad pase lo que pase
+        if(btnGlobal) {
+            btnGlobal.disabled = false;
+            btnGlobal.innerText = "GUARDAR PREDICCIÓN 💾";
+        }
     }
 }
 
