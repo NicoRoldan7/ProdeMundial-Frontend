@@ -27,6 +27,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (accessToken) {
             console.log("¡Logueado con Google con éxito!");
             
+            // Ponemos un aviso visual temporal en los títulos mientras procesa el Backend
+            const titulo = document.getElementById("titulo-bienvenida");
+            const subtitulo = document.getElementById("subtitulo-bienvenida");
+            if (titulo) titulo.innerText = "⏳ SINCRONIZANDO...";
+            if (subtitulo) subtitulo.innerText = "Conectando tu cuenta de Google con el Prode, espera un momento...";
+
             try {
                 // Abrimos el token para sacar los datos reales de Google
                 const tokenParts = accessToken.split('.');
@@ -61,10 +67,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                     cargarTableroPartidos();
                 } else {
                     alert("❌ Error al sincronizar tu cuenta de Google con el servidor del Prode.");
+                    // Reestablecemos el texto de bienvenida si falló
+                    if (titulo) titulo.innerText = "¡BIENVENIDO AL PRODE MUNDIALISTA!";
                 }
 
             } catch (e) {
                 console.error("Error al decodificar o sincronizar el token de Google:", e);
+                alert("❌ Ocurrió un error inesperado procesando la sesión de Google.");
             }
             
             // Limpiamos la URL para borrar el token largo de la barra de direcciones
@@ -154,6 +163,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                 datosActualizados.password = nuevaPass;
             }
 
+            // Efecto visual de guardado para el botón del modal
+            const btnGuardarPerfil = formConfigPerfil.querySelector("button[type='submit']");
+            const textoOriginalBtn = btnGuardarPerfil ? btnGuardarPerfil.innerText : "GUARDAR CAMBIOS";
+            if (btnGuardarPerfil) {
+                btnGuardarPerfil.disabled = true;
+                btnGuardarPerfil.innerText = "GUARDANDO... ⏳";
+            }
+
             try {
                 const res = await fetch(`${BASE_URL}/usuarios/${usuario.id}`, {
                     method: "PUT", 
@@ -178,10 +195,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             } catch (error) {
                 console.error("Error al actualizar perfil:", error);
                 alert("Hubo un problema de conexión para guardar los datos.");
+            } finally {
+                if (btnGuardarPerfil) {
+                    btnGuardarPerfil.disabled = false;
+                    btnGuardarPerfil.innerText = textoOriginalBtn;
+                }
             }
         });
     }
-    // =========================================================================
     
     // Escuchar el botón de cerrar sesión
     const btnCerrar = document.getElementById("btn-cerrar-sesion-nuevo");
@@ -243,6 +264,13 @@ function configurarLogin() {
             return;
         }
 
+        // feedback visual en el login tradicional
+        const btnLogin = e.target.querySelector("button[type='submit']");
+        if (btnLogin) {
+            btnLogin.disabled = true;
+            btnLogin.innerText = "INGRESANDO... ⏳";
+        }
+
         try {
             const res = await fetch(`${BASE_URL}/usuarios/login`, {
                 method: "POST",
@@ -267,6 +295,11 @@ function configurarLogin() {
         } catch (error) {
             console.error("Error en el Login:", error);
             alert("Hubo un problema al conectar con el servidor.");
+        } finally {
+            if (btnLogin) {
+                btnLogin.disabled = false;
+                btnLogin.innerText = "INGRESAR";
+            }
         }
     });
 }
@@ -358,6 +391,13 @@ function configurarRegistro() {
             return;
         }
 
+        // 🔥 FEEDBACK DE ESPERA: Evita que piensen que se colgó por culpa de BCrypt
+        const btnRegistro = e.target.querySelector("button[type='submit']");
+        if (btnRegistro) {
+            btnRegistro.disabled = true;
+            btnRegistro.innerText = "CREANDO CUENTA... ⏳";
+        }
+
         try {
             const res = await fetch(`${BASE_URL}/usuarios`, {
                 method: "POST",
@@ -383,6 +423,12 @@ function configurarRegistro() {
         } catch (error) {
             console.error("Error al registrar usuario:", error);
             alert("Hubo un problema de conexión con el servidor.");
+        } finally {
+            // Reestablecemos el botón a su estado normal si terminó
+            if (btnRegistro) {
+                btnRegistro.disabled = false;
+                btnRegistro.innerText = "REGISTRARME";
+            }
         }
     });
 }
@@ -588,6 +634,13 @@ async function guardarPrediccionGlobal() {
 function iniciarSesionConGoogle(e) {
     e.preventDefault();
     console.log("Redirigiendo a Google Auth...");
+    
+    // Feedback visual en el botón de Google que fue presionado
+    const btnPresionado = e.currentTarget;
+    if (btnPresionado) {
+        btnPresionado.disabled = true;
+        btnPresionado.innerText = "Conectando a Google... ⏳";
+    }
     
     const SUPABASE_PROJECT_URL = "https://qtabvayxldwetjxgrqqm.supabase.co"; 
     const SUPABASE_ANON_KEY = "sb_publishable_zF0BeJb0jnfVB3zUMytneQ_oZK04Il9"; 
