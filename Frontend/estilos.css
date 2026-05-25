@@ -88,11 +88,22 @@ header p {
     backdrop-filter: blur(10px); 
     border: 2px solid var(--dorado);
     border-radius: 20px;
-    padding: 2.5rem 2rem;
+    padding: 2rem 2rem;          /* Reducido levemente de 2.5rem a 2rem para optimizar espacio */
     max-width: 400px;
     width: 100%;
+    max-height: 90vh;            /* Evita que se sature en pantallas de celulares chicos */
+    overflow-y: auto;            /* Si no entra, mete un scroll interno sutil en la tarjeta */
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
     text-align: center;
+}
+
+/* Ocultamos barra de scroll de la tarjeta de login para mantenerla estética */
+.tarjeta-login::-webkit-scrollbar {
+    width: 4px;
+}
+.tarjeta-login::-webkit-scrollbar-thumb {
+    background: var(--borde);
+    border-radius: 4px;
 }
 
 .icono-copa {

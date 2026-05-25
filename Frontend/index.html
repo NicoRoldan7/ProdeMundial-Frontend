@@ -13,60 +13,67 @@
             <div class="icono-copa">🏆</div>
             
             <div id="vista-login">
-                <h2>INGRESO AL PRODE</h2>
-                <p></p>
-                <form id="form-login">
-                    <div class="grupo-input">
-                        <label for="login-user">Usuario:</label>
-                        <input type="text" id="login-user" autocomplete="off" placeholder="Ej: admin" required>
-                    </div>
-                    <div class="grupo-input">
-                        <label for="login-pass">Contraseña:</label>
-                        <input type="password" id="login-pass" placeholder="••••••••" required>
-                    </div>
-                    <button type="submit" class="btn-guardar">INGRESAR</button>
-                </form>
-                <p style="margin-top: 1.5rem; font-size: 0.9rem; color: var(--texto-secundario);">
-                    ¿No tenés cuenta? <a href="#" id="link-ir-a-registro" style="color: var(--dorado); font-weight: bold; text-decoration: none;">Registrate acá</a>
-                </p>
-            </div>
+    <h2>INGRESO AL PRODE</h2>
+    <p></p>
+    <form id="form-login">
+        <div class="grupo-input">
+            <label for="login-user">Usuario o Email:</label>
+            <input type="text" id="login-user" autocomplete="off" placeholder="Ej: admin o tu@email.com" required>
+        </div>
+        <div class="grupo-input">
+            <label for="login-pass">Contraseña:</label>
+            <input type="password" id="login-pass" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn-guardar">INGRESAR</button>
+    </form>
+    <p style="margin-top: 1.5rem; font-size: 0.9rem; color: var(--texto-secundario);">
+        ¿No tenés cuenta? <a href="#" id="link-ir-a-registro" style="color: var(--dorado); font-weight: bold; text-decoration: none;">Registrate acá</a>
+    </p>
+</div>
 
-            <div id="vista-registro" style="display: none;">
-                <h2>NUEVO JUGADOR</h2>
-                <p style="color: #ffffff; margin-bottom: 1.5rem; font-size: 0.9rem;">Creá tu cuenta de juego</p>
-                
-                <form id="form-registro" style="display: flex; flex-direction: column; gap: 1rem;">
-                    <div class="grupo-input" style="margin-bottom: 0px;">
-                        <label for="reg-user">Nombre Completo:</label>
-                        <input type="text" id="reg-user" autocomplete="off" placeholder="Ej: Juan Perez" required>
-                    </div>
-                    <div class="grupo-input" style="margin-bottom: 0px;">
-                        <label for="reg-email">Email:</label>
-                        <input type="email" id="reg-email" autocomplete="off" placeholder="JuanPerez@example.com" required>
-                    </div>
-                    <div class="grupo-input" style="margin-bottom: 0px;">
-                        <label for="reg-pass">Contraseña:</label>
-                        <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres" required>
-                    </div>
-                    
-                    <button type="submit" class="btn-guardar" style="width: 100%; margin-top: 0.5rem;">CREAR CUENTA</button>
-                    
-                    <div style="display: flex; align-items: center; text-align: center; color: var(--texto-secundario); font-size: 0.75rem; font-weight: 800; letter-spacing: 1px; margin: 0.5rem 0;">
-                        <span style="flex: 1; border-bottom: 1px solid var(--borde); margin-right: .5em;"></span>
-                        O REGISTRATE CON
-                        <span style="flex: 1; border-bottom: 1px solid var(--borde); margin-left: .5em;"></span>
-                    </div>
+<div id="vista-registro" style="display: none;">
+    <h2>NUEVO JUGADOR</h2>
+    <p style="color: #ffffff; opacity: 0.9; margin-bottom: 1.2rem; font-size: 0.9rem;">Creá tu cuenta de juego</p>
+    
+    <form id="form-registro" style="display: flex; flex-direction: column; gap: 0.8rem;">
+        <div class="grupo-input" style="margin-bottom: 0px;">
+            <label for="reg-user">Nombre Completo:</label>
+            <input type="text" id="reg-user" autocomplete="off" placeholder="Ej: Juan Perez" required>
+        </div>
 
-                    <button type="button" class="btn-google" id="btn-google-register" style="width: 100%; padding: 0.8rem 1.5rem; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700; color: #062417; background-color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width: 18px; height: 18px;">
-                        Google
-                    </button>
-                </form>
+        <div class="grupo-input" style="margin-bottom: 0px;">
+            <label for="reg-username">Nombre de Usuario (Para ingresar):</label>
+            <input type="text" id="reg-username" autocomplete="off" placeholder="Ej: juanperez99" required>
+        </div>
 
-                <p style="margin-top: 1.5rem; font-size: 0.9rem; color: var(--texto-secundario);">
-                    ¿Ya tenés cuenta? <a href="#" id="link-ir-a-login" style="color: var(--dorado); font-weight: bold; text-decoration: none;">Volver al ingreso</a>
-                </p>
-            </div>
+        <div class="grupo-input" style="margin-bottom: 0px;">
+            <label for="reg-email">Email:</label>
+            <input type="email" id="reg-email" autocomplete="off" placeholder="juanperez@example.com" required>
+        </div>
+
+        <div class="grupo-input" style="margin-bottom: 0px;">
+            <label for="reg-pass">Contraseña:</label>
+            <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres" required>
+        </div>
+        
+        <button type="submit" class="btn-guardar" style="width: 100%; margin-top: 0.5rem;">CREAR CUENTA</button>
+        
+        <div style="display: flex; align-items: center; text-align: center; color: var(--texto-secundario); font-size: 0.75rem; font-weight: 800; letter-spacing: 1px; margin: 0.3rem 0;">
+            <span style="flex: 1; border-bottom: 1px solid var(--borde); margin-right: .5em;"></span>
+            O REGISTRATE CON
+            <span style="flex: 1; border-bottom: 1px solid var(--borde); margin-left: .5em;"></span>
+        </div>
+
+        <button type="button" class="btn-google" id="btn-google-register" style="width: 100%; padding: 0.8rem 1.5rem; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700; color: #062417; background-color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width: 18px; height: 18px;">
+            Google
+        </button>
+    </form>
+
+    <p style="margin-top: 1.2rem; font-size: 0.9rem; color: var(--texto-secundario);">
+        ¿Ya tenés cuenta? <a href="#" id="link-ir-a-login" style="color: var(--dorado); font-weight: bold; text-decoration: none;">Volver al ingreso</a>
+    </p>
+</div>
 
         </section>
     </div>
