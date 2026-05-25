@@ -204,7 +204,9 @@ document.addEventListener("DOMContentLoaded", () => {
     verificarSesionExistente();
 });
 
-// 1. SISTEMA DE CONTROL DE ACCESO CONTRA LA API
+// =========================================================================
+// 🔄 1. SISTEMA DE CONTROL DE ACCESO (MODIFICADO PROFESIONAL - OPCIÓN B)
+// =========================================================================
 function configurarLogin() {
     document.getElementById("form-login").addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -212,6 +214,7 @@ function configurarLogin() {
         const userInput = document.getElementById("login-user").value.trim();
         const passInput = document.getElementById("login-pass").value.trim();
 
+        // Bypass de administrador local rápido
         if (userInput === CREDENCIALES_VALIDAS.usuario && passInput === CREDENCIALES_VALIDAS.clave) {
             const adminSession = { id: "00000000-0000-0000-0000-000000000000", nombre: userInput };
             localStorage.setItem("usuarioProde", JSON.stringify(adminSession));
@@ -223,11 +226,14 @@ function configurarLogin() {
         }
 
         try {
+            // Mandamos el userInput tal cual en la propiedad "email" de la API.
+            // Tu API de Render (o controlador de C#) recibirá este string y lo usará en la query 
+            // que armamos para comparar tanto contra la columna Username como Email.
             const res = await fetch(`${BASE_URL}/usuarios/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    email: userInput,
+                    email: userInput, // Lleva el texto ingresado (sea nick o mail)
                     password: passInput
                 })
             });
@@ -273,32 +279,38 @@ function configurarNavegacionLogin() {
     }
 }
 
+// =========================================================================
+// 🔄 CONFIGURACIÓN DEL REGISTRO (MODIFICADO CON NUEVOS CAMPOS)
+// =========================================================================
 function configurarRegistro() {
     document.getElementById("form-registro").addEventListener("submit", async (e) => {
         e.preventDefault();
         
         const nuevoNombre = document.getElementById("reg-user").value.trim();
+        const nuevoUsername = document.getElementById("reg-username").value.trim(); // NUEVO: Captura el alias
         const nuevoEmail = document.getElementById("reg-email").value.trim();
         const nuevaPass = document.getElementById("reg-pass").value.trim();
 
-        if (!nuevoNombre || !nuevoEmail || !nuevaPass) {
+        if (!nuevoNombre || !nuevoUsername || !nuevoEmail || !nuevaPass) {
             alert("⚠️ Por favor, completa todos los campos del formulario.");
             return;
         }
 
         try {
+            // Mandamos los campos estructurados hacia la API de Render
             const res = await fetch(`${BASE_URL}/usuarios`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     nombre: nuevoNombre,
+                    username: nuevoUsername, // Agregado al payload del backend
                     email: nuevoEmail,
                     password: nuevaPass
                 })
             });
 
             if (res.ok) {
-                alert(`🎯 ¡Usuario "${nuevoNombre}" creado con éxito!\nRevisá tu mail (${nuevoEmail}) para verificar tu cuenta antes de ingresar.`);
+                alert(`🎯 ¡Usuario "${nuevoUsername}" creado con éxito!\nYa podés ingresar usando tu usuario y contraseña.`);
                 document.getElementById("form-registro").reset();
                 document.getElementById("link-ir-a-login").click(); 
             } else {
