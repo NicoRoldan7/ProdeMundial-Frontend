@@ -10,12 +10,19 @@ const CREDENCIALES_VALIDAS = {
 let pestañaActiva = "inicio"; 
 
 // 🚀 UNIFICADO: La carga inicial de la página configurando todo el Front
+// 🚀 UNIFICADO: La carga inicial de la página configurando todo el Front
 document.addEventListener("DOMContentLoaded", () => {
     // Inicializar accesos y navegación de pantallas
     configurarLogin();
     configurarNavegacionLogin();
     configurarRegistro();
     configurarPestañas();
+    
+    // 🌟 Evento para el botón de Google (Se busca tanto en login como registro)
+    const btnGoogle = document.getElementById("btn-google-register") || document.getElementById("btn-google-login");
+    if (btnGoogle) {
+        btnGoogle.addEventListener("click", iniciarSesionConGoogle);
+    }
     
     // 🌟 Evento para abrir/cerrar el menú de perfil
     const btnPerfil = document.getElementById("btn-perfil");
@@ -73,31 +80,54 @@ function configurarPestañas() {
 }
 
 // 1. SISTEMA DE CONTROL DE ACCESO
+// SISTEMA DE CONTROL DE ACCESO CONTRA LA API
 function configurarLogin() {
-    document.getElementById("form-login").addEventListener("submit", (e) => {
+    document.getElementById("form-login").addEventListener("submit", async (e) => {
         e.preventDefault();
         
-        const userInput = document.getElementById("login-user").value;
-        const passInput = document.getElementById("login-pass").value;
+        const userInput = document.getElementById("login-user").value.trim();
+        const passInput = document.getElementById("login-pass").value.trim();
 
-        // Validamos contra tus datos predeterminados
+        // Mantenemos tu bypass de Admin local por si las moscas para pruebas rápidas
         if (userInput === CREDENCIALES_VALIDAS.usuario && passInput === CREDENCIALES_VALIDAS.clave) {
-            
-            // 🌟 Guardamos la sesión (Agregamos un ID ficticio para el admin, ej: 1)
-            const usuarioLogueado = { id: 1, nombre: userInput };
-            localStorage.setItem("usuarioProde", JSON.stringify(usuarioLogueado));
-
-            // Pintamos el nombre en el header al instante
+            const adminSession = { id: "00000000-0000-0000-0000-000000000000", nombre: userInput };
+            localStorage.setItem("usuarioProde", JSON.stringify(adminSession));
             document.getElementById("nombre-usuario-header").innerText = userInput;
-
-            // Ocultamos el login y mostramos el juego
             document.getElementById("pantalla-login").style.display = "none";
             document.getElementById("pantalla-juego").style.display = "block";
-            
-            // Cargamos los partidos reglamentarios
             cargarTableroPartidos();
-        } else {
-            alert("❌ Usuario o Contraseña incorrectos. ¡Intenta de nuevo!");
+            return;
+        }
+
+        try {
+            // Le pegamos al endpoint de login de tu API en .NET
+            const res = await fetch(`${BASE_URL}/usuarios/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email: userInput, // o usuario, según espere tu DTO en C#
+                    password: passInput
+                })
+            });
+
+            if (res.ok) {
+                // Tu API nos devuelve el usuario real de la BD: { id: "guid...", nombre: "Juan Perez" }
+                const usuarioLogueado = await res.json(); 
+
+                localStorage.setItem("usuarioProde", JSON.stringify(usuarioLogueado));
+                document.getElementById("nombre-usuario-header").innerText = usuarioLogueado.nombre;
+
+                document.getElementById("pantalla-login").style.display = "none";
+                document.getElementById("pantalla-juego").style.display = "block";
+                
+                cargarTableroPartidos();
+            } else {
+                const errText = await res.text();
+                alert("❌ Error de ingreso: " + errText);
+            }
+        } catch (error) {
+            console.error("Error en el Login:", error);
+            alert("Hubo un problema al conectar con el servidor.");
         }
     });
 }
@@ -123,27 +153,36 @@ function configurarNavegacionLogin() {
 }
 
 // Enviar el nuevo usuario a la API de .NET
+// Enviar el nuevo usuario a la API de .NET con todos sus campos
 function configurarRegistro() {
     document.getElementById("form-registro").addEventListener("submit", async (e) => {
         e.preventDefault();
         
+        // Capturamos los 3 inputs reales de tu HTML
         const nuevoNombre = document.getElementById("reg-user").value.trim();
+        const nuevoEmail = document.getElementById("reg-email").value.trim();
+        const nuevaPass = document.getElementById("reg-pass").value.trim();
 
-        if (!nuevoNombre) return;
+        if (!nuevoNombre || !nuevoEmail || !nuevaPass) {
+            alert("⚠️ Por favor, completa todos los campos del formulario.");
+            return;
+        }
 
         try {
             const res = await fetch(`${BASE_URL}/usuarios`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    nombre: nuevoNombre
+                    nombre: nuevoNombre,
+                    email: nuevoEmail,
+                    password: nuevaPass // Enviamos la estructura completa a C#
                 })
             });
 
             if (res.ok) {
-                alert(`🎯 ¡Usuario "${nuevoNombre}" creado con éxito! Ya podés ingresar.`);
+                alert(`🎯 ¡Usuario "${nuevoNombre}" creado con éxito!\nRevisá tu mail (${nuevoEmail}) para verificar tu cuenta antes de ingresar.`);
                 document.getElementById("form-registro").reset();
-                document.getElementById("link-ir-a-login").click();
+                document.getElementById("link-ir-a-login").click(); // Te manda al Login automático
             } else {
                 const errText = await res.text();
                 alert("❌ No se pudo crear el usuario: " + errText);
@@ -364,21 +403,46 @@ async function guardarPrediccion(partidoId) {
     }
 }
 
-// 4. CONTROLADOR DE PERSISTENCIA (FIX F5)
+// 🌐 FLUJO DE GOOGLE AUTH VIA SUPABASE
+function iniciarSesionConGoogle(e) {
+    e.preventDefault();
+    console.log("Redirigiendo a Google Auth...");
+    
+// 🌟 1. Tu URL real que vimos en la última captura:
+    const SUPABASE_PROJECT_URL = "https://qtabvayxldwetjxgrqqm.supabase.co"; 
+    
+    // 🌟 2. Tu clave que copiaste de la anteúltima captura:
+    const SUPABASE_ANON_KEY = "sb_publishable_zF0BeJbOjnfVB3zUMytneQ_oZK04Il9"; // (Ponela completa acá)
+    
+    // Detecta automáticamente si estás en local (127.0.0.1) o en producción
+    const redirectUrl = window.location.origin; 
+    
+    // Redirección oficial pasando la apikey para evitar el error anterior
+    window.location.href = `${SUPABASE_PROJECT_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(redirectUrl)}&apikey=${SUPABASE_ANON_KEY}`;
+}
+// 4. CONTROLADOR DE PERSISTENCIA (FIX F5 Y CAPTURA DE GOOGLE)
 function verificarSesionExistente() {
+    // 🌟 NUEVO: Si venimos volviendo de loguearnos con Google, la URL trae un #access_token
+    const hash = window.location.hash;
+    if (hash && hash.includes("access_token")) {
+        // Limpiamos la URL para borrar el token largo de la barra de direcciones
+        window.history.replaceState(null, null, " ");
+        
+        // Armamos la sesión con el usuario que se logueó por Google
+        const usuarioGoogle = { 
+            id: "google-oauth-user", // Supabase lo asocia internamente en auth.users
+            nombre: "Jugador Google" 
+        };
+        localStorage.setItem("usuarioProde", JSON.stringify(usuarioGoogle));
+    }
+
     const usuarioGuardado = localStorage.getItem("usuarioProde");
 
     if (usuarioGuardado) {
         const usuario = JSON.parse(usuarioGuardado); 
-        
-        // Pintamos el nombre real del usuario en el botón del perfil
         document.getElementById("nombre-usuario-header").innerText = usuario.nombre;
-
-        // Saltamos el login directo al juego
         document.getElementById("pantalla-login").style.display = "none";
         document.getElementById("pantalla-juego").style.display = "block";
-
-        // Renderizamos los partidos que correspondan a la pestaña activa por defecto
         cargarTableroPartidos();
     }
 }
