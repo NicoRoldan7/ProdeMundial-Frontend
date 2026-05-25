@@ -205,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // =========================================================================
-// 🔄 1. SISTEMA DE CONTROL DE ACCESO (MODIFICADO PROFESIONAL - OPCIÓN B)
+// 🔄 1. SISTEMA DE CONTROL DE ACCESO (CORREGIDO PARA TU LOGIN DTO)
 // =========================================================================
 function configurarLogin() {
     document.getElementById("form-login").addEventListener("submit", async (e) => {
@@ -226,14 +226,12 @@ function configurarLogin() {
         }
 
         try {
-            // Mandamos el userInput tal cual en la propiedad "email" de la API.
-            // Tu API de Render (o controlador de C#) recibirá este string y lo usará en la query 
-            // que armamos para comparar tanto contra la columna Username como Email.
             const res = await fetch(`${BASE_URL}/usuarios/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    email: userInput, // Lleva el texto ingresado (sea nick o mail)
+                    // 🔥 ¡REEMPLAZADO! Cambiamos "email" por "inputUsuario" para que calce con tu LoginDTO de C#
+                    inputUsuario: userInput, 
                     password: passInput
                 })
             });
