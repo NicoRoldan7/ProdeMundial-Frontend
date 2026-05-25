@@ -12,128 +12,148 @@
         <section class="tarjeta-login">
             <div class="icono-copa">🏆</div>
             
-            <div id="vista-login">
-    <h2>INGRESO AL PRODE</h2>
-    <p></p>
-    <form id="form-login">
-        <div class="grupo-input">
-            <label for="login-user">Usuario o Email:</label>
-            <input type="text" id="login-user" autocomplete="off" placeholder="Ej: admin o tu@email.com" required>
-        </div>
-        <div class="grupo-input">
-            <label for="login-pass">Contraseña:</label>
-            <input type="password" id="login-pass" placeholder="••••••••" required>
-        </div>
-        <button type="submit" class="btn-guardar">INGRESAR</button>
-    </form>
-    <p style="margin-top: 1.5rem; font-size: 0.9rem; color: var(--texto-secundario);">
-        ¿No tenés cuenta? <a href="#" id="link-ir-a-registro" style="color: var(--dorado); font-weight: bold; text-decoration: none;">Registrate acá</a>
-    </p>
-</div>
+            <h2 id="titulo-bienvenida">¡BIENVENIDO AL PRODE MUNDIALISTA!</h2>
+            <p id="subtitulo-bienvenida" style="color: #ffffff; opacity: 0.9; margin-bottom: 1.5rem; font-size: 0.95rem; text-align: center;">
+                Elegí cómo querés ingresar a tirar tus pronósticos
+            </p>
 
-<div id="vista-registro" style="display: none;">
-    <h2>NUEVO JUGADOR</h2>
-    <p style="color: #ffffff; opacity: 0.9; margin-bottom: 1.2rem; font-size: 0.9rem;">Creá tu cuenta de juego</p>
-    
-    <form id="form-registro" style="display: flex; flex-direction: column; gap: 0.8rem;">
-        <div class="grupo-input" style="margin-bottom: 0px;">
-            <label for="reg-user">Nombre Completo:</label>
-            <input type="text" id="reg-user" autocomplete="off" placeholder="Ej: Juan Perez" required>
-        </div>
+            <div id="bloque-opciones-iniciales" style="display: flex; flex-direction: column; gap: 1rem; width: 100%;">
+                <button type="button" id="btn-elegir-ingreso" class="btn-guardar" style="width: 100%;">INICIAR SESIÓN</button>
+                <button type="button" id="btn-elegir-registro" class="btn-guardar" style="width: 100%;">CREAR USUARIO</button>
+            </div>
+            
+            <div id="vista-login" style="display: none; width: 100%;">
+                <form id="form-login">
+                    <div class="grupo-input">
+                        <label for="login-user">Usuario o Email:</label>
+                        <input type="text" id="login-user" autocomplete="off" placeholder="admin o tu@email.com" required>
+                    </div>
+                    <div class="grupo-input">
+                        <label for="login-pass">Contraseña:</label>
+                        <input type="password" id="login-pass" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn-guardar">INGRESAR</button>
 
-        <div class="grupo-input" style="margin-bottom: 0px;">
-            <label for="reg-username">Nombre de Usuario (Para ingresar):</label>
-            <input type="text" id="reg-username" autocomplete="off" placeholder="Ej: juanperez99" required>
-        </div>
+                    <div style="display: flex; align-items: center; text-align: center; color: var(--texto-secundario); font-size: 0.75rem; font-weight: 800; letter-spacing: 1px; margin: 0.8rem 0;">
+                        <span style="flex: 1; border-bottom: 1px solid var(--borde); margin-right: .5em;"></span>
+                        O INGRESÁ CON
+                        <span style="flex: 1; border-bottom: 1px solid var(--borde); margin-left: .5em;"></span>
+                    </div>
 
-        <div class="grupo-input" style="margin-bottom: 0px;">
-            <label for="reg-email">Email:</label>
-            <input type="email" id="reg-email" autocomplete="off" placeholder="juanperez@example.com" required>
-        </div>
+                    <button type="button" class="btn-google" id="btn-google-login" style="width: 100%; padding: 0.8rem 1.5rem; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700; color: #062417; background-color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width: 18px; height: 18px;">
+                        Google
+                    </button>
+                </form>
+                
+                <p style="margin-top: 1.2rem; font-size: 0.8rem; text-align: center;">
+                    <a href="#" id="btn-olvide-clave" style="color: var(--texto-secundario); text-decoration: underline;">Olvidé mi contraseña</a>
+                </p>
+                <p style="margin-top: 0.8rem; font-size: 0.9rem; text-align: center;">
+                    <a href="#" id="btn-volver-login" style="color: var(--dorado); text-decoration: none; font-weight: bold;">← Volver atrás</a>
+                </p>
+            </div>
 
-        <div class="grupo-input" style="margin-bottom: 0px;">
-            <label for="reg-pass">Contraseña:</label>
-            <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres" required>
-        </div>
-        
-        <button type="submit" class="btn-guardar" style="width: 100%; margin-top: 0.5rem;">CREAR CUENTA</button>
-        
-        <div style="display: flex; align-items: center; text-align: center; color: var(--texto-secundario); font-size: 0.75rem; font-weight: 800; letter-spacing: 1px; margin: 0.3rem 0;">
-            <span style="flex: 1; border-bottom: 1px solid var(--borde); margin-right: .5em;"></span>
-            O REGISTRATE CON
-            <span style="flex: 1; border-bottom: 1px solid var(--borde); margin-left: .5em;"></span>
-        </div>
+            <div id="vista-registro" style="display: none; width: 100%;">
+                <form id="form-registro" style="display: flex; flex-direction: column; gap: 0.8rem;">
+                    <div class="grupo-input" style="margin-bottom: 0px;">
+                        <label for="reg-user">Nombre Completo:</label>
+                        <input type="text" id="reg-user" autocomplete="off" placeholder="Juan Perez" required>
+                    </div>
 
-        <button type="button" class="btn-google" id="btn-google-register" style="width: 100%; padding: 0.8rem 1.5rem; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700; color: #062417; background-color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width: 18px; height: 18px;">
-            Google
-        </button>
-    </form>
+                    <div class="grupo-input" style="margin-bottom: 0px;">
+                        <label for="reg-username">Nombre de Usuario (Para ingresar):</label>
+                        <input type="text" id="reg-username" autocomplete="off" placeholder="juanperez99" required>
+                    </div>
 
-    <p style="margin-top: 1.2rem; font-size: 0.9rem; color: var(--texto-secundario);">
-        ¿Ya tenés cuenta? <a href="#" id="link-ir-a-login" style="color: var(--dorado); font-weight: bold; text-decoration: none;">Volver al ingreso</a>
-    </p>
-</div>
+                    <div class="grupo-input" style="margin-bottom: 0px;">
+                        <label for="reg-email">Email:</label>
+                        <input type="email" id="reg-email" autocomplete="off" placeholder="juanperez@example.com" required>
+                    </div>
+
+                    <div class="grupo-input" style="margin-bottom: 0px;">
+                        <label for="reg-pass">Contraseña:</label>
+                        <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres" required>
+                    </div>
+                    
+                    <button type="submit" class="btn-guardar" style="width: 100%; margin-top: 0.5rem;">CREAR CUENTA</button>
+                    
+                    <div style="display: flex; align-items: center; text-align: center; color: var(--texto-secundario); font-size: 0.75rem; font-weight: 800; letter-spacing: 1px; margin: 0.3rem 0;">
+                        <span style="flex: 1; border-bottom: 1px solid var(--borde); margin-right: .5em;"></span>
+                        O REGISTRATE CON
+                        <span style="flex: 1; border-bottom: 1px solid var(--borde); margin-left: .5em;"></span>
+                    </div>
+
+                    <button type="button" class="btn-google" id="btn-google-register" style="width: 100%; padding: 0.8rem 1.5rem; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700; color: #062417; background-color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width: 18px; height: 18px;">
+                        Google
+                    </button>
+                </form>
+
+                <p style="margin-top: 1.2rem; font-size: 0.9rem; text-align: center;">
+                    <a href="#" id="btn-volver-registro" style="color: var(--dorado); text-decoration: none; font-weight: bold;">← Volver atrás</a>
+                </p>
+            </div>
 
         </section>
     </div>
 
     <div id="pantalla-juego" style="display: none;">
         <header style="padding: 1rem 0; background: rgba(4, 23, 14, 0.9);">
-    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto; padding: 0 1rem;">
-        <div style="text-align: left;">
-            <h1 style="margin: 0; font-size: 1.8rem; color: var(--dorado);">PRODE MUNDIAL 2026</h1>
-            <p style="color: #ffffff; opacity: 0.9; margin: 5px 0 0 0; font-size: 0.9rem;">Navegá por las fechas y cargá tus resultados</p>
-        </div>
-        <div class="menu-perfil-contenedor">
-    <button id="btn-perfil" class="btn-perfil-trigger">
-        <span class="avatar-usuario">👤</span>
-        <span id="nombre-usuario-header">Invitado</span>
-        <span class="flechita-menu">▼</span>
-    </button>
-    
-    <div id="dropdown-perfil" class="dropdown-perfil-contenido">
-        <a href="#" id="btn-configurar-perfil">Configurar Perfil ⚙️</a>
-        <hr style="border: 0; border-top: 1px solid var(--borde); margin: 5px 0;">
-        <a href="#" id="btn-cerrar-sesion-nuevo">Cerrar Sesión 🚪</a>
-    </div>
-</div>
-    </div>
-    
-<div class="contenedor-pestañas-escritorio">
-            <div id="pestañas-contenedor" class="pestañas-scroll">
-                <button class="tab-btn active" data-tab="inicio">Inicio</button>
-                <button class="tab-btn" data-tab="fecha1">Fecha 1</button>
-                <button class="tab-btn" data-tab="fecha2">Fecha 2</button>
-                <button class="tab-btn" data-tab="fecha3">Fecha 3</button>
-                <button class="tab-btn" data-tab="16avos">16avos</button>
-                <button class="tab-btn" data-tab="octavos">Octavos</button>
-                <button class="tab-btn" data-tab="cuartos">Cuartos</button>
-                <button class="tab-btn" data-tab="semis">Semis</button>
-                <button class="tab-btn" data-tab="final">Final 🏆</button>
-                <button class="tab-btn" data-tab="general">Posiciones Generales 📊</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto; padding: 0 1rem;">
+                <div style="text-align: left;">
+                    <h1 style="margin: 0; font-size: 1.8rem; color: var(--dorado);">PRODE MUNDIAL 2026</h1>
+                    <p style="color: #ffffff; opacity: 0.9; margin: 5px 0 0 0; font-size: 0.9rem;">Navegá por las fechas y cargá tus resultados</p>
+                </div>
+                <div class="menu-perfil-contenedor">
+                    <button id="btn-perfil" class="btn-perfil-trigger">
+                        <span class="avatar-usuario">👤</span>
+                        <span id="nombre-usuario-header">Invitado</span>
+                        <span class="flechita-menu">▼</span>
+                    </button>
+                    
+                    <div id="dropdown-perfil" class="dropdown-perfil-contenido">
+                        <a href="#" id="btn-configurar-perfil">Configurar Perfil ⚙️</a>
+                        <hr style="border: 0; border-top: 1px solid var(--borde); margin: 5px 0;">
+                        <a href="#" id="btn-cerrar-sesion-nuevo">Cerrar Sesión 🚪</a>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <div class="contenedor-desplegable-fechas">
-            <button id="btn-fechas-trigger" class="btn-fechas-menu">
-                <span id="texto-fecha-activa">Inicio</span> <span>▼</span>
-            </button>
             
-            <div id="dropdown-fechas-contenido" class="dropdown-fechas-lista">
-                <button class="tab-btn active" data-tab="inicio">Inicio</button>
-                <button class="tab-btn" data-tab="fecha1">Fecha 1</button>
-                <button class="tab-btn" data-tab="fecha2">Fecha 2</button>
-                <button class="tab-btn" data-tab="fecha3">Fecha 3</button>
-                <button class="tab-btn" data-tab="16avos">16avos</button>
-                <button class="tab-btn" data-tab="octavos">Octavos</button>
-                <button class="tab-btn" data-tab="cuartos">Cuartos</button>
-                <button class="tab-btn" data-tab="semis">Semis</button>
-                <button class="tab-btn" data-tab="final">Final 🏆</button>
-                <button class="tab-btn" data-tab="general">Posiciones Generales 📊</button>
+            <div class="contenedor-pestañas-escritorio">
+                <div id="pestañas-contenedor" class="pestañas-scroll">
+                    <button class="tab-btn active" data-tab="inicio">Inicio</button>
+                    <button class="tab-btn" data-tab="fecha1">Fecha 1</button>
+                    <button class="tab-btn" data-tab="fecha2">Fecha 2</button>
+                    <button class="tab-btn" data-tab="fecha3">Fecha 3</button>
+                    <button class="tab-btn" data-tab="16avos">16avos</button>
+                    <button class="tab-btn" data-tab="octavos">Octavos</button>
+                    <button class="tab-btn" data-tab="cuartos">Cuartos</button>
+                    <button class="tab-btn" data-tab="semis">Semis</button>
+                    <button class="tab-btn" data-tab="final">Final 🏆</button>
+                    <button class="tab-btn" data-tab="general">Posiciones Generales 📊</button>
+                </div>
             </div>
-        </div>
-</header>
+
+            <div class="contenedor-desplegable-fechas">
+                <button id="btn-fechas-trigger" class="btn-fechas-menu">
+                    <span id="texto-fecha-activa">Inicio</span> <span>▼</span>
+                </button>
+                
+                <div id="dropdown-fechas-contenido" class="dropdown-fechas-lista">
+                    <button class="tab-btn active" data-tab="inicio">Inicio</button>
+                    <button class="tab-btn" data-tab="fecha1">Fecha 1</button>
+                    <button class="tab-btn" data-tab="fecha2">Fecha 2</button>
+                    <button class="tab-btn" data-tab="fecha3">Fecha 3</button>
+                    <button class="tab-btn" data-tab="16avos">16avos</button>
+                    <button class="tab-btn" data-tab="octavos">Octavos</button>
+                    <button class="tab-btn" data-tab="cuartos">Cuartos</button>
+                    <button class="tab-btn" data-tab="semis">Semis</button>
+                    <button class="tab-btn" data-tab="final">Final 🏆</button>
+                    <button class="tab-btn" data-tab="general">Posiciones Generales 📊</button>
+                </div>
+            </div>
+        </header>
 
         <main class="contenedor">
             <section class="seccion-lista">
@@ -143,38 +163,38 @@
                 </div>
 
                 <div class="contenedor-boton-global">
-                <button id="btn-guardar-prediccion-global" class="btn-guardar-global">
-                    GUARDAR PREDICCIÓN 💾
-                </button>
-            </div>
+                    <button id="btn-guardar-prediccion-global" class="btn-guardar-global">
+                        GUARDAR PREDICCIÓN 💾
+                    </button>
+                </div>
             </section>
         </main>
     </div>
 
     <div id="modal-perfil" class="modal-contenedor" style="display: none;">
-    <div class="modal-contenido">
-        <span id="btn-cerrar-modal" class="modal-cerrar">&times;</span>
-        <h2>⚙️ Configurar Perfil</h2>
-        <p style="color: #ffffff; opacity: 0.8; font-size: 0.9rem; margin-bottom: 1.5rem;">Modificá tus datos de jugador</p>
-        
-        <form id="form-configurar-perfil" style="display: flex; flex-direction: column; gap: 1rem;">
-            <div class="grupo-input" style="margin-bottom: 0px;">
-                <label for="config-nombre">Nombre de Jugador:</label>
-                <input type="text" id="config-nombre" autocomplete="off" required>
-            </div>
+        <div class="modal-contenido">
+            <span id="btn-cerrar-modal" class="modal-cerrar">&times;</span>
+            <h2>⚙️ Configurar Perfil</h2>
+            <p style="color: #ffffff; opacity: 0.8; font-size: 0.9rem; margin-bottom: 1.5rem;">Modificá tus datos de jugador</p>
             
-            <p style="font-size: 0.8rem; color: var(--dorado); margin: 0.5rem 0 0 0;">
-                🔒 Si querés cambiar tu contraseña:
-            </p>
-            <div class="grupo-input" style="margin-bottom: 0px;">
-                <label for="config-pass">Nueva Contraseña:</label>
-                <input type="password" id="config-pass" placeholder="Dejá en blanco para no cambiar">
-            </div>
+            <form id="form-configurar-perfil" style="display: flex; flex-direction: column; gap: 1rem;">
+                <div class="grupo-input" style="margin-bottom: 0px;">
+                    <label for="config-nombre">Nombre de Jugador:</label>
+                    <input type="text" id="config-nombre" autocomplete="off" required>
+                </div>
+                
+                <p style="font-size: 0.8rem; color: var(--dorado); margin: 0.5rem 0 0 0;">
+                    🔒 Si querés cambiar tu contraseña:
+                </p>
+                <div class="grupo-input" style="margin-bottom: 0px;">
+                    <label for="config-pass">Nueva Contraseña:</label>
+                    <input type="password" id="config-pass" placeholder="Dejá en blanco para no cambiar">
+                </div>
 
-            <button type="submit" class="btn-guardar" style="width: 100%; margin-top: 1rem;">GUARDAR CAMBIOS</button>
-        </form>
+                <button type="submit" class="btn-guardar" style="width: 100%; margin-top: 1rem;">GUARDAR CAMBIOS</button>
+            </form>
+        </div>
     </div>
-</div>
 
     <script src="app.js"></script>
 </body>

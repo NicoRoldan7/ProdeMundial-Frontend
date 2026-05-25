@@ -10,14 +10,14 @@ const CREDENCIALES_VALIDAS = {
 let pestañaActiva = "inicio"; 
 
 // 🚀 UNIFICADO: La carga inicial de la página configurando todo el Front
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     console.log("🚀 Inicializando aplicación...");
 
     // 🔥 Inicializar los clics de las pestañas de una (afecta a PC y celular)
     configurarPestañas();
 
     // =========================================================================
-    // 🌟 CAPTURAR DATOS DE GOOGLE CUANDO SE REDIRIGE DESDE SUPABASE
+    // 🌟 CAPTURAR DATOS DE GOOGLE CUANDO SE REDIRIGE DESDE SUPABASE (SINCRONIZADO)
     // =========================================================================
     const hash = window.location.hash;
     if (hash && hash.includes("access_token")) {
@@ -32,19 +32,39 @@ document.addEventListener("DOMContentLoaded", () => {
                 const tokenParts = accessToken.split('.');
                 const userPayload = JSON.parse(atob(tokenParts[1]));
                 
-                // Sacamos el nombre real de tu cuenta de Google o un fallback por si falla
+                // Sacamos la info que nos provee Google
                 const nombreReal = userPayload.user_metadata?.full_name || userPayload.user_metadata?.name || "Jugador Google";
                 const uIdReal = userPayload.sub; // Tu GUID real de Supabase
-                
-                // Armamos el objeto unificado en usuarioProde para no mezclar claves
-                const usuarioGoogle = { 
-                    id: uIdReal, 
-                    nombre: nombreReal 
-                };
-                
-                localStorage.setItem("usuarioProde", JSON.stringify(usuarioGoogle));
+                const emailReal = userPayload.email; // El correo electrónico
+
+                // 🔥 ENVIAMOS LOS DATOS A NUESTRO BACKEND PARA GUARDARLO O LOGUEARLO
+                const res = await fetch(`${BASE_URL}/usuarios/google`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        id: uIdReal,
+                        nombre: nombreReal,
+                        email: emailReal
+                    })
+                });
+
+                if (res.ok) {
+                    const usuarioBackend = await res.json();
+                    
+                    // Guardamos la sesión oficial del Backend en el LocalStorage
+                    localStorage.setItem("usuarioProde", JSON.stringify(usuarioBackend));
+                    
+                    // Pasamos directo a la pantalla de juego
+                    document.getElementById("nombre-usuario-header").innerText = usuarioBackend.nombre;
+                    document.getElementById("pantalla-login").style.display = "none";
+                    document.getElementById("pantalla-juego").style.display = "block";
+                    cargarTableroPartidos();
+                } else {
+                    alert("❌ Error al sincronizar tu cuenta de Google con el servidor del Prode.");
+                }
+
             } catch (e) {
-                console.error("Error al decodificar el token de Google:", e);
+                console.error("Error al decodificar o sincronizar el token de Google:", e);
             }
             
             // Limpiamos la URL para borrar el token largo de la barra de direcciones
@@ -58,11 +78,12 @@ document.addEventListener("DOMContentLoaded", () => {
     configurarNavegacionLogin(); 
     configurarRegistro();
     
-    // 🌟 Evento para el botón de Google
-    const btnGoogle = document.getElementById("btn-google-register") || document.getElementById("btn-google-login");
-    if (btnGoogle) {
-        btnGoogle.addEventListener("click", iniciarSesionConGoogle);
-    }
+    // 🌟 Eventos para los botones de Google (Login y Registro)
+    const btnGoogleLogin = document.getElementById("btn-google-login");
+    const btnGoogleRegister = document.getElementById("btn-google-register");
+    
+    if (btnGoogleLogin) btnGoogleLogin.addEventListener("click", iniciarSesionConGoogle);
+    if (btnGoogleRegister) btnGoogleRegister.addEventListener("click", iniciarSesionConGoogle);
     
     // 🌟 Evento para abrir/cerrar el menú de perfil (NO SE TOCA, QUEDA INDEPENDIENTE)
     const btnPerfil = document.getElementById("btn-perfil");
@@ -178,13 +199,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const dropdownFechas = document.getElementById("dropdown-fechas-contenido");
 
     if (btnFechas && dropdownFechas) {
-        // Abrir y cerrar el menú de fechas al hacer click
         btnFechas.addEventListener("click", (e) => {
-            e.stopPropagation(); // Evita que se cierre al instante
+            e.stopPropagation(); 
             dropdownFechas.classList.toggle("mostrar-fechas");
         });
 
-        // Si hacen click en cualquier parte vacía de la pantalla, cerramos este menú
         window.addEventListener("click", () => {
             dropdownFechas.classList.remove("mostrar-fechas");
         });
@@ -192,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // =========================================================================
 
     // =========================================================================
-    // 📥 BOTÓN GLOBAL DE GUARDAR PREDICCIÓN (NUEVO)
+    // 📥 BOTÓN GLOBAL DE GUARDAR PREDICCIÓN
     // =========================================================================
     const btnGuardarGlobal = document.getElementById("btn-guardar-prediccion-global");
     if (btnGuardarGlobal) {
@@ -205,7 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // =========================================================================
-// 🔄 1. SISTEMA DE CONTROL DE ACCESO (CORREGIDO PARA TU LOGIN DTO)
+// 🔄 1. SISTEMA DE CONTROL DE ACCESO (TRADICIONAL)
 // =========================================================================
 function configurarLogin() {
     document.getElementById("form-login").addEventListener("submit", async (e) => {
@@ -214,7 +233,6 @@ function configurarLogin() {
         const userInput = document.getElementById("login-user").value.trim();
         const passInput = document.getElementById("login-pass").value.trim();
 
-        // Bypass de administrador local rápido
         if (userInput === CREDENCIALES_VALIDAS.usuario && passInput === CREDENCIALES_VALIDAS.clave) {
             const adminSession = { id: "00000000-0000-0000-0000-000000000000", nombre: userInput };
             localStorage.setItem("usuarioProde", JSON.stringify(adminSession));
@@ -230,7 +248,6 @@ function configurarLogin() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    // 🔥 ¡REEMPLAZADO! Cambiamos "email" por "inputUsuario" para que calce con tu LoginDTO de C#
                     inputUsuario: userInput, 
                     password: passInput
                 })
@@ -254,38 +271,85 @@ function configurarLogin() {
     });
 }
 
+// =========================================================================
+// 🧭 NAVEGACIÓN DINÁMICA DE LA BIENVENIDA MUNDIALISTA
+// =========================================================================
 function configurarNavegacionLogin() {
-    const linkRegistro = document.getElementById("link-ir-a-registro");
-    const linkLogin = document.getElementById("link-ir-a-login");
+    const bloqueInicial = document.getElementById("bloque-opciones-iniciales");
     const vistaLogin = document.getElementById("vista-login");
     const vistaRegistro = document.getElementById("vista-registro");
+    
+    const titulo = document.getElementById("titulo-bienvenida");
+    const subtitulo = document.getElementById("subtitulo-bienvenida");
 
-    if(linkRegistro && vistaLogin && vistaRegistro) {
-        linkRegistro.addEventListener("click", (e) => {
-            e.preventDefault();
-            vistaLogin.style.display = "none";
-            vistaRegistro.style.display = "block";
+    const btnElegirIngreso = document.getElementById("btn-elegir-ingreso");
+    const btnElegirRegistro = document.getElementById("btn-elegir-registro");
+    const btnVolverLogin = document.getElementById("btn-volver-login");
+    const btnVolverRegistro = document.getElementById("btn-volver-registro");
+    const btnOlvideClave = document.getElementById("btn-olvide-clave");
+
+    // 1. Click en INICIAR SESIÓN
+    if (btnElegirIngreso) {
+        btnElegirIngreso.addEventListener("click", () => {
+            bloqueInicial.style.display = "none";
+            vistaRegistro.style.display = "none";
+            vistaLogin.style.display = "block";
+            titulo.innerText = "INGRESO AL PRODE";
+            subtitulo.innerText = "Ingresá con tus credenciales o vía Google";
         });
     }
 
-    if(linkLogin && vistaLogin && vistaRegistro) {
-        linkLogin.addEventListener("click", (e) => {
+    // 2. Click en CREAR USUARIO
+    if (btnElegirRegistro) {
+        btnElegirRegistro.addEventListener("click", () => {
+            bloqueInicial.style.display = "none";
+            vistaLogin.style.display = "none";
+            vistaRegistro.style.display = "block";
+            titulo.innerText = "NUEVO JUGADOR";
+            subtitulo.innerText = "Creá tu cuenta de juego para empezar a sumar puntos";
+        });
+    }
+
+    // 3. Botón volver desde el Login
+    if (btnVolverLogin) {
+        btnVolverLogin.addEventListener("click", (e) => {
+            e.preventDefault();
+            vistaLogin.style.display = "none";
+            bloqueInicial.style.display = "flex";
+            titulo.innerText = "¡BIENVENIDO AL PRODE MUNDIALISTA!";
+            subtitulo.innerText = "Elegí cómo querés ingresar a tirar tus pronósticos";
+        });
+    }
+
+    // 4. Botón volver desde el Registro
+    if (btnVolverRegistro) {
+        btnVolverRegistro.addEventListener("click", (e) => {
             e.preventDefault();
             vistaRegistro.style.display = "none";
-            vistaLogin.style.display = "block";
+            bloqueInicial.style.display = "flex";
+            titulo.innerText = "¡BIENVENIDO AL PRODE MUNDIALISTA!";
+            subtitulo.innerText = "Elegí cómo querés ingresar a tirar tus pronósticos";
+        });
+    }
+
+    // 5. Olvidé mi clave
+    if (btnOlvideClave) {
+        btnOlvideClave.addEventListener("click", (e) => {
+            e.preventDefault();
+            alert("🔒 Para resetear tu clave, comunicate con el administrador del torneo.");
         });
     }
 }
 
 // =========================================================================
-// 🔄 CONFIGURACIÓN DEL REGISTRO (MODIFICADO CON NUEVOS CAMPOS)
+// 🔄 CONFIGURACIÓN DEL REGISTRO TRADICIONAL
 // =========================================================================
 function configurarRegistro() {
     document.getElementById("form-registro").addEventListener("submit", async (e) => {
         e.preventDefault();
         
         const nuevoNombre = document.getElementById("reg-user").value.trim();
-        const nuevoUsername = document.getElementById("reg-username").value.trim(); // NUEVO: Captura el alias
+        const nuevoUsername = document.getElementById("reg-username").value.trim(); 
         const nuevoEmail = document.getElementById("reg-email").value.trim();
         const nuevaPass = document.getElementById("reg-pass").value.trim();
 
@@ -295,13 +359,12 @@ function configurarRegistro() {
         }
 
         try {
-            // Mandamos los campos estructurados hacia la API de Render
             const res = await fetch(`${BASE_URL}/usuarios`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     nombre: nuevoNombre,
-                    username: nuevoUsername, // Agregado al payload del backend
+                    username: nuevoUsername, 
                     email: nuevoEmail,
                     password: nuevaPass
                 })
@@ -310,7 +373,9 @@ function configurarRegistro() {
             if (res.ok) {
                 alert(`🎯 ¡Usuario "${nuevoUsername}" creado con éxito!\nYa podés ingresar usando tu usuario y contraseña.`);
                 document.getElementById("form-registro").reset();
-                document.getElementById("link-ir-a-login").click(); 
+                
+                // Forzamos el volver atrás automático al menú principal
+                document.getElementById("btn-volver-registro").click(); 
             } else {
                 const errText = await res.text();
                 alert("❌ No se pudo crear el usuario: " + errText);
@@ -329,11 +394,15 @@ function cerrarSesion() {
     document.getElementById("pantalla-login").style.display = "flex";
     document.getElementById("contenedor-partidos").innerHTML = "";
     
+    // Reseteamos la pantalla de bienvenida al menú de botones limpio
     document.getElementById("vista-registro").style.display = "none";
-    document.getElementById("vista-login").style.display = "block";
+    document.getElementById("vista-login").style.display = "none";
+    document.getElementById("bloque-opciones-iniciales").style.display = "flex";
+    document.getElementById("titulo-bienvenida").innerText = "¡BIENVENIDO AL PRODE MUNDIALISTA!";
+    document.getElementById("subtitulo-bienvenida").innerText = "Elegí cómo querés ingresar a tirar tus pronósticos";
 }
 
-// 2. DIBUJAR EL FIXTURE FILTRADO POR PESTAÑAS (Modificado para remover botones individuales)
+// 2. DIBUJAR EL FIXTURE FILTRADO POR PESTAÑAS
 async function cargarTableroPartidos() {
     const contenedor = document.getElementById("contenedor-partidos");
     const btnGlobalContainer = document.querySelector(".contenedor-boton-global");
@@ -343,7 +412,6 @@ async function cargarTableroPartidos() {
     const usuario = JSON.parse(usuarioGuardado);
     const usuarioId = usuario.id || 1; 
 
-    // Ocultar botón global en secciones que no corresponden a fechas de juego
     if (btnGlobalContainer) btnGlobalContainer.style.display = "none";
 
     if (pestañaActiva === "general") {
@@ -391,7 +459,7 @@ async function cargarTableroPartidos() {
 
         contenedor.innerHTML = "";
 
-        // 💡 Tus GUIDs de la Base de Datos para filtrar partidos por ID de fecha
+        // Equivalencias de GUIDs para las fechas
         const equivalenciasFechas = {
             "03ad09d5-7d3e-4d0e-a473-cbd8837fe590": "fecha1"
         };
@@ -407,7 +475,6 @@ async function cargarTableroPartidos() {
             return;
         }
 
-        // Si hay partidos para pronosticar, mostramos el botón de guardar abajo de todo
         if (btnGlobalContainer) btnGlobalContainer.style.display = "flex";
 
         partidosFiltrados.forEach(partido => {
@@ -420,10 +487,9 @@ async function cargarTableroPartidos() {
 
             const fila = document.createElement("div");
             fila.className = "tarjeta-formulario";
-            fila.setAttribute("data-partido-id", partido.id); // Identificador clave para juntar los datos
+            fila.setAttribute("data-partido-id", partido.id); 
             fila.style = "margin-bottom: 16px;"; 
             
-            // Renderizado limpito sin el bloque-accion de cada tarjeta
             fila.innerHTML = `
                 <div class="bloque-equipo local">
                     <span class="nombre-equipo">${local.nombre}</span>
@@ -448,7 +514,7 @@ async function cargarTableroPartidos() {
     }
 }
 
-// 3. NUEVA FUNCIÓN GLOBAL: JUNTA TODO EL FIXTURE Y GUARDA LA FECHA COMPLETA EN LA API
+// 3. ENVIAR PREDICCIONES EN BLOQUE A LA API
 async function guardarPrediccionGlobal() {
     const usuarioGuardado = localStorage.getItem("usuarioProde");
     if (!usuarioGuardado) {
@@ -459,7 +525,6 @@ async function guardarPrediccionGlobal() {
     const usuario = JSON.parse(usuarioGuardado);
     const usuarioId = usuario.id;
 
-    // Buscamos todas las tarjetas de partidos renderizadas actualmente
     const tarjetas = document.querySelectorAll(".tarjeta-formulario[data-partido-id]");
     
     if (tarjetas.length === 0) {
@@ -467,7 +532,6 @@ async function guardarPrediccionGlobal() {
         return;
     }
 
-    // Desactivamos el botón temporalmente para que no hagan doble click furioso
     const btnGlobal = document.getElementById("btn-guardar-prediccion-global");
     if(btnGlobal) {
         btnGlobal.disabled = true;
@@ -476,7 +540,6 @@ async function guardarPrediccionGlobal() {
 
     const peticiones = [];
 
-    // Barremos cada tarjeta, sacamos los goles ingresados y preparamos las llamadas fetch
     tarjetas.forEach(tarjeta => {
         const partidoId = tarjeta.getAttribute("data-partido-id");
         const inputLocal = tarjeta.querySelector(".input-goles-local");
@@ -486,7 +549,6 @@ async function guardarPrediccionGlobal() {
             const golesLocal = parseInt(inputLocal.value) || 0;
             const golesVisitante = parseInt(inputVisitante.value) || 0;
 
-            // Agregamos la promesa al array
             const p = fetch(`${BASE_URL}/predicciones`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -502,15 +564,12 @@ async function guardarPrediccionGlobal() {
     });
 
     try {
-        // Disparamos todos los fetch juntos en paralelo para máxima velocidad
         const respuestas = await Promise.all(peticiones);
-        
-        // Verificamos si al menos todas las respuestas volvieron con estado OK
         const todoOk = respuestas.every(res => res.ok);
 
         if (todoOk) {
             alert("✅ ¡Todas tus predicciones de la fecha se guardaron con éxito! 🏆");
-            cargarTableroPartidos(); // Recargamos para refrescar datos limpios
+            cargarTableroPartidos(); 
         } else {
             alert("⚠️ Algunas predicciones no se pudieron procesar bien. Revisá e intentalo de nuevo.");
         }
@@ -518,7 +577,6 @@ async function guardarPrediccionGlobal() {
         console.error("Error al guardar predicciones globales:", error);
         alert("Hubo un problema de red al intentar mandar los pronósticos.");
     } finally {
-        // Volvemos el botón a la normalidad pase lo que pase
         if(btnGlobal) {
             btnGlobal.disabled = false;
             btnGlobal.innerText = "GUARDAR PREDICCIÓN 💾";
@@ -553,12 +611,16 @@ function verificarSesionExistente() {
         document.getElementById("pantalla-juego").style.display = "block";
         cargarTableroPartidos();
     } else {
+        // Al arrancar sin sesión, aseguramos ver los botones iniciales limpios
         document.getElementById("pantalla-login").style.display = "flex";
+        document.getElementById("bloque-opciones-iniciales").style.display = "flex";
+        document.getElementById("vista-login").style.display = "none";
+        document.getElementById("vista-registro").style.display = "none";
         document.getElementById("pantalla-juego").style.display = "none";
     }
 }
 
-// 5. ESCUCHADOR DE CLICS EN LAS PESTAÑAS (SINCRONIZADO PARA AMBAS VERSIONES)
+// 5. ESCUCHADOR DE CLICS EN LAS PESTAÑAS
 function configurarPestañas() {
     const botonesPestañas = document.querySelectorAll(".tab-btn");
     const textoFechaActiva = document.getElementById("texto-fecha-activa");
@@ -566,22 +628,17 @@ function configurarPestañas() {
 
     console.log(`🔎 Buscando pestañas... Se encontraron: ${botonesPestañas.length} botones.`);
 
-    if (botonesPestañas.length === 0) {
-        return;
-    }
+    if (botonesPestañas.length === 0) return;
 
     botonesPestañas.forEach(boton => {
         boton.addEventListener("click", (e) => {
             e.preventDefault();
 
             const pestañaSeleccionada = boton.getAttribute("data-tab");
-            console.log(`🖱️ Clic detectado físicamente en la pestaña: ${pestañaSeleccionada}`);
-            
             if (!pestañaSeleccionada) return;
 
             pestañaActiva = pestañaSeleccionada;
 
-            // Buscamos TODOS los botones con ese mismo data-tab (el de PC y el de Celu) y los activamos juntos
             botonesPestañas.forEach(b => {
                 if (b.getAttribute("data-tab") === pestañaSeleccionada) {
                     b.classList.add("active");
@@ -590,13 +647,11 @@ function configurarPestañas() {
                 }
             });
 
-            // 📱 SI ESTAMOS EN CELULAR: Actualiza el texto del desplegable y lo cierra
             if (textoFechaActiva && dropdownFechas) {
-                textoFechaActiva.innerText = boton.innerText; // Setea el nombre, ej: "Fecha 1"
-                dropdownFechas.classList.remove("mostrar-fechas"); // Esconde la cajita
+                textoFechaActiva.innerText = boton.innerText; 
+                dropdownFechas.classList.remove("mostrar-fechas"); 
             }
 
-            console.log(`🎯 Cambiando visualmente a la pestaña: ${pestañaActiva}`);
             cargarTableroPartidos();
         });
     });

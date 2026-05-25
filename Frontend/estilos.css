@@ -66,7 +66,7 @@ header p {
     margin-top: 0.2rem;
 }
 
-/* 🔐 PANTALLA LOGIN */
+/* 🔐 PANTALLA BIENVENIDA / LOGIN UNIFICADO */
 #pantalla-login {
     position: fixed;
     top: 0;
@@ -88,11 +88,11 @@ header p {
     backdrop-filter: blur(10px); 
     border: 2px solid var(--dorado);
     border-radius: 20px;
-    padding: 2rem 2rem;          /* Reducido levemente de 2.5rem a 2rem para optimizar espacio */
-    max-width: 400px;
+    padding: 1.5rem 2rem;          /* Reducido para evitar scroll en creación de usuario */
+    max-width: 420px;
     width: 100%;
-    max-height: 90vh;            /* Evita que se sature en pantallas de celulares chicos */
-    overflow-y: auto;            /* Si no entra, mete un scroll interno sutil en la tarjeta */
+    max-height: 90vh;            
+    overflow-y: auto;            
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
     text-align: center;
 }
@@ -118,18 +118,33 @@ header p {
     margin-bottom: 0.2rem;
 }
 
+.tarjeta-login p {
+    color: var(--texto-secundario);
+    font-size: 0.95rem;
+    margin-bottom: 1rem;          /* Reducido para ganar espacio vertical */
+}
+
+/* 🧭 BLOQUE DE OPCIONES INICIALES */
+.bloque-opciones-iniciales {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
 /* 🗂️ COMPONENTES DE FORMULARIO */
 .grupo-input {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.8rem;        /* Compactado de 1.2rem a 0.8rem para que entre todo en una pantalla */
     text-align: left;
 }
 
 .grupo-input label {
     display: block;
-    font-size: 0.85rem;
+    font-size: 0.8rem;            
     font-weight: 800;
     color: var(--dorado);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;        /* Reducido para ahorrar espacio */
     text-transform: uppercase;
 }
 
@@ -138,16 +153,16 @@ header p {
 .grupo-input input[type="email"],
 select {
     width: 100%;
-    padding: 0.85rem 1.2rem;
+    padding: 0.7rem 1rem;         /* Menos alto interno para optimizar el espacio vertical */
     background-color: #04170e;
     border: 2px solid var(--borde);
     border-radius: 10px;
     color: #ffffff;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
 }
 
-/* 🔘 BOTONES */
+/* 🔘 BOTONES PRINCIPALES */
 .btn-guardar {
     width: 100%;
     padding: 0.9rem 1.5rem;
@@ -159,6 +174,7 @@ select {
     background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
     cursor: pointer;
     text-transform: uppercase;
+    transition: all 0.2s ease;
 }
 
 .btn-guardar:hover {
@@ -166,8 +182,67 @@ select {
     transform: translateY(-1px);
 }
 
-/* 🗂️ BARRA DE FECHAS CON SCROLL HORIZONTAL PROLIJO */
-.contenedor-pestañas {
+/* 🌐 BOTÓN EXCLUSIVO DE GOOGLE */
+.btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 0.85rem 1.5rem;
+    background-color: #ffffff;
+    color: #1f2937;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+}
+
+.btn-google:hover {
+    background-color: #f3f4f6;
+    transform: translateY(-1px);
+}
+
+.btn-google img {
+    width: 18px;
+    height: 18px;
+}
+
+/* 🔗 LINKS DE VOLVER Y AYUDA */
+.link-volver {
+    display: inline-block;
+    margin-top: 0.8rem;           /* Reducido para mantenerlo visible sin scrollear */
+    color: var(--texto-secundario);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.link-volver:hover {
+    color: var(--dorado);
+}
+
+.link-olvide {
+    display: block;
+    text-align: right;
+    margin-top: -0.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--texto-secundario);
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+.link-olvide:hover {
+    color: var(--dorado);
+    text-decoration: underline;
+}
+
+/* 🗂️ BARRA DE FECHAS CON SCROLL HORIZONTAL (ESCRITORIO) */
+.contenedor-pestañas-escritorio {
     width: 100%;
     margin: 1.5rem 0;
     border-bottom: 2px solid var(--borde);
@@ -184,7 +259,7 @@ select {
     -webkit-overflow-scrolling: touch;
 }
 
-/* Ocultamos las barras de scroll nativas para que parezca una app nativa */
+/* Ocultamos las barras de scroll nativas */
 .pestañas-scroll::-webkit-scrollbar {
     display: none !important;
 }
@@ -201,7 +276,7 @@ select {
     font-weight: 700;
     border-radius: 8px 8px 0 0;
     cursor: pointer;
-    flex-shrink: 0 !important; /* Evita que las pestañas se aplasten */
+    flex-shrink: 0 !important; 
     transition: all 0.15s ease;
 }
 
@@ -211,7 +286,7 @@ select {
     border-color: var(--dorado);
 }
 
-/* ⚽ TARJETAS DE PARTIDOS (Horizontal en Escritorio y Celular) */
+/* ⚽ TARJETAS DE PARTIDOS */
 .seccion-lista h2 {
     font-family: 'Graduate', serif;
     font-size: 1.3rem;
@@ -223,7 +298,7 @@ select {
 
 .tarjeta-formulario {
     display: flex !important;
-    flex-direction: row !important; /* SIEMPRE en una sola línea horizontal */
+    flex-direction: row !important; 
     align-items: center !important;
     justify-content: space-between !important;
     gap: 0.5rem !important;
@@ -235,13 +310,12 @@ select {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Bloques de Equipos (Mantiene bandera y nombre juntos) */
 .bloque-equipo {
     flex: 1;
     display: flex;
     align-items: center;
     gap: 8px;
-    min-width: 0; /* Permite que el texto colapse elegantemente si es muy largo */
+    min-width: 0; 
 }
 
 .bloque-equipo.local {
@@ -261,7 +335,7 @@ select {
     font-size: 1rem;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; /* Si el nombre es gigante, le mete tres puntitos en vez de romper */
+    text-overflow: ellipsis; 
 }
 
 .escudo {
@@ -271,7 +345,6 @@ select {
     flex-shrink: 0;
 }
 
-/* Bloque Central de Goles */
 .bloque-goles {
     display: flex;
     align-items: center;
@@ -302,30 +375,24 @@ select {
     text-align: center !important;
 }
 
-/* Bloque de Acción (Botón Arriesgar) */
+/* Bloque de Acción Oculto */
 .bloque-accion {
-    display: none !important
+    display: none !important;
 }
 
-.bloque-accion .btn-guardar {
-    width: auto;
-    padding: 0.55rem 1rem;
-    font-size: 0.8rem;
-    border-radius: 6px;
-}
-
+/* 📥 CONTENEDOR BOTÓN GLOBAL DE GUARDAR */
 .contenedor-boton-global {
     display: flex;
-    justify-content: center;  /* Centra el botón perfectamente */
+    justify-content: center;  
     align-items: center;
     width: 100%;
-    margin-top: 2rem;         /* Le da una linda separación respecto al último partido */
-    padding-bottom: 2rem;     /* Espacio extra al final para que no pegue contra el borde de la pantalla */
+    margin-top: 2rem;         
+    padding-bottom: 2rem;     
 }
 
 .btn-guardar-global {
     width: 100%;
-    max-width: 350px;         /* Para que no ocupe toda la pantalla en PC y quede elegante */
+    max-width: 350px;         
     padding: 1rem 2rem;
     border: none;
     border-radius: 12px;
@@ -350,16 +417,7 @@ select {
     transform: translateY(0);
 }
 
-/* 📱 Ajuste opcional para celu: si querés que ocupe casi todo el ancho */
-@media (max-width: 650px) {
-    .btn-guardar-global {
-        max-width: 90%; 
-        font-size: 1rem;
-        padding: 0.9rem 1.5rem;
-    }
-}
-
-/* 👤 DESPLEGABLE DE PERFIL */
+/* 👤 DESPLEGABLE DE PERFIL DE USUARIO */
 .menu-perfil-contenedor {
     position: relative;
 }
@@ -405,8 +463,13 @@ select {
     color: #062417;
 }
 
+/* El botón de menú desplegable de fechas para celulares se oculta en PC */
+.contenedor-desplegable-fechas {
+    display: none !important; 
+}
+
 /* ==========================================================================
-   📱 ADAPTACIÓN OPTIMIZADA EXCLUSIVA PARA PANTALLAS CHICAS (menos de 650px)
+   📱 ADAPTACIÓN OPTIMIZADA EXCLUSIVA PARA CELULARES (MÁXIMO 650PX)
    ========================================================================== */
 @media (max-width: 650px) {
     
@@ -415,7 +478,7 @@ select {
     }
     
     .header-contenido {
-        align-items: flex-start; /* Alinea los textos arriba y el usuario mantiene su esquina */
+        align-items: flex-start; 
     }
 
     header h1 {
@@ -431,19 +494,19 @@ select {
         font-size: 0.8rem;
     }
 
-    /* ⚽ LA MAGIA: Todo horizontal pero más compacto para que no se apile */
+    /* ⚽ AJUSTE DEL FIXTURE HORIZONTAL EN CELULAR */
     .tarjeta-formulario {
         padding: 0.8rem 0.6rem !important;
         gap: 0.3rem !important;
     }
 
     .nombre-equipo {
-        font-size: 0.85rem; /* Achicamos la letra para que entre holgado */
+        font-size: 0.85rem; 
     }
 
     .escudo {
         width: 26px;
-        height: 26px; /* Achicamos sutilmente las banderas */
+        height: 26px; 
     }
 
     .tarjeta-formulario input[type="number"] {
@@ -457,63 +520,29 @@ select {
         gap: 4px !important;
     }
 
-    .bloque-accion .btn-guardar {
-        padding: 0.5rem 0.7rem !important;
-        font-size: 0.75rem !important;
+    .btn-guardar-global {
+        max-width: 90%; 
+        font-size: 1rem;
+        padding: 0.9rem 1.5rem;
     }
-}
 
-/* Opcional: Si el celular es extremadamente chico (menos de 400px), ocultamos texto de Arriesgar y dejamos ícono o achicamos más */
-@media (max-width: 400px) {
-    .nombre-equipo {
-        max-width: 55px; /* Evita desbordes extremos en pantallas minúsculas */
-    }
-}
-
-/* ==========================================================================
-   🗂️ COMPORTAMIENTO DE FECHAS (ESCRITORIO POR DEFECTO)
-   ========================================================================== */
-.contenedor-pestañas-escritorio {
-    width: 100%;
-    margin: 1.5rem 0;
-    border-bottom: 2px solid var(--borde);
-}
-
-.pestañas-scroll {
-    display: flex !important;
-    flex-direction: row !important;
-    gap: 6px;
-}
-
-/* El botón de celular se oculta en computadoras */
-.contenedor-desplegable-fechas {
-    display: none !important; 
-}
-
-
-/* ==========================================================================
-   📱 ADAPTACIÓN EN CELULARES (MÁXIMO 650PX)
-   ========================================================================== */
-@media (max-width: 650px) {
-    
-    /* 🚫 1. Ocultamos las pestañas horizontales del PC */
+    /* 🚫 OCULTAMOS LAS PESTAÑAS HORIZONTALES */
     .contenedor-pestañas-escritorio, 
     #pestañas-contenedor, 
     .pestañas-scroll {
         display: none !important;
     }
 
-    /* 🟢 2. Mostramos y centramos el contenedor flotante del botón */
+    /* 🟢 MOSTRAMOS EL DESPLEGABLE FLOTANTE DE FECHAS */
     .contenedor-desplegable-fechas {
         display: flex !important;
-        justify-content: center !important; /* Centrado horizontal */
+        justify-content: center !important; 
         align-items: center !important;
         width: 100% !important;
         margin: 1rem auto 1.5rem auto !important;
-        position: relative !important;      /* Contiene el menú flotante */
+        position: relative !important;      
     }
 
-    /* 🎯 3. El botón del desplegable */
     .btn-fechas-menu {
         background: #04170e;
         color: #ffffff;
@@ -526,34 +555,31 @@ select {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        width: 220px;          /* Un ancho fijo lindo para que no se deforme */
+        width: 220px;          
         gap: 10px;
     }
 
-    /* 🪟 4. La lista flotante (Con esto evitamos el scroll infinito abajo) */
     .dropdown-fechas-lista {
-        display: none;          /* Se oculta por defecto */
-        position: absolute !important; /* ¡Flota por encima! Ya no empuja el fixture */
-        top: 110%;              /* Aparece justo abajo del botón */
+        display: none;        
+        position: absolute !important; 
+        top: 110%;              
         left: 50% !important;
-        transform: translateX(-50%) !important; /* Centrado perfecto con el botón */
+        transform: translateX(-50%) !important; 
         background: #0b3924;
-        width: 220px;           /* Mismo ancho del botón para que quede simétrico */
-        max-height: 250px;      /* Si hay muchas opciones, el scroll se hace acá adentro */
-        overflow-y: auto;       /* Habilita scroll interno */
+        width: 220px;           
+        max-height: 250px;      
+        overflow-y: auto;       
         box-shadow: 0px 8px 24px rgba(0,0,0,0.7);
         border: 1px solid var(--borde);
         border-radius: 8px;
-        z-index: 99999 !important; /* Asegura quedar por encima de las tarjetas */
+        z-index: 99999 !important; 
         padding: 5px 0;
     }
 
-    /* Clase que ponés con JS para abrir el menú */
     .dropdown-fechas-lista.mostrar-fechas {
         display: block !important;
     }
 
-    /* 🔘 5. Botones internos de la lista */
     .dropdown-fechas-lista .tab-btn {
         display: block !important;
         width: 100% !important;
@@ -579,41 +605,43 @@ select {
     }
 }
 
-/* ==========================================================================
-   ⚙️ VENTANA MODAL: CONFIGURAR PERFIL (Solución al desborde)
-   ========================================================================== */
+@media (max-width: 400px) {
+    .nombre-equipo {
+        max-width: 60px; 
+    }
+}
 
-/* 1. Contenedor de fondo: Bloquea la pantalla y pone el fondo oscuro */
+/* ==========================================================================
+   ⚙️ VENTANA MODAL: CONFIGURAR PERFIL
+   ========================================================================== */
 .modal-contenedor {
-    position: fixed;            /* Se queda fijo flotando en la pantalla */
+    position: fixed;            
     top: 0;
     left: 0;
     width: 100%;
     height: 100vh;
-    background-color: rgba(4, 23, 14, 0.85); /* Verde oscuro traslúcido a tono con el login */
-    backdrop-filter: blur(6px); /* Efecto difuminado prolijo de fondo */
-    display: flex;              /* Activamos flexbox para centrar */
-    justify-content: center;    /* Centrado horizontal */
-    align-items: center;        /* Centrado vertical */
-    z-index: 999999 !important; /* Por encima de absolutamente todo (incluso del dropdown) */
+    background-color: rgba(4, 23, 14, 0.85); 
+    backdrop-filter: blur(6px); 
+    display: flex;              
+    justify-content: center;    
+    align-items: center;        
+    z-index: 999999 !important; 
     padding: 1rem;
 }
 
-/* 2. La tarjeta interna del modal */
 .modal-contenido {
-    background: linear-gradient(135deg, #0b3924 0%, #062417 100%); /* Tus colores */
+    background: linear-gradient(135deg, #0b3924 0%, #062417 100%); 
     border: 2px solid var(--dorado);
     border-radius: 20px;
     padding: 2.5rem 2rem;
     max-width: 420px;
     width: 100%;
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
-    position: relative;         /* Para posicionar la 'X' de cerrar */
+    position: relative;         
     text-align: left;
-    animation: aparecerModal 0.25s ease-out; /* Una linda animación al abrir */
+    animation: aparecerModal 0.25s ease-out; 
 }
 
-/* 3. Botón de cerrar (X) de la esquina superior derecha */
 .modal-cerrar {
     position: absolute;
     top: 15px;
@@ -627,10 +655,9 @@ select {
 }
 
 .modal-cerrar:hover {
-    color: var(--alerta);       /* Se pone rojo al pasar el mouse */
+    color: var(--alerta);       
 }
 
-/* Animación sutil para que aparezca desde el centro */
 @keyframes aparecerModal {
     from {
         transform: scale(0.9);
@@ -642,7 +669,6 @@ select {
     }
 }
 
-/* 📱 Ajuste extra para celulares bien chicos (ej: iPhone SE) */
 @media (max-width: 400px) {
     .modal-contenido {
         padding: 1.5rem 1.2rem;
