@@ -567,3 +567,76 @@ select {
         font-weight: bold;
     }
 }
+
+/* ==========================================================================
+   ⚙️ VENTANA MODAL: CONFIGURAR PERFIL (Solución al desborde)
+   ========================================================================== */
+
+/* 1. Contenedor de fondo: Bloquea la pantalla y pone el fondo oscuro */
+.modal-contenedor {
+    position: fixed;            /* Se queda fijo flotando en la pantalla */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(4, 23, 14, 0.85); /* Verde oscuro traslúcido a tono con el login */
+    backdrop-filter: blur(6px); /* Efecto difuminado prolijo de fondo */
+    display: flex;              /* Activamos flexbox para centrar */
+    justify-content: center;    /* Centrado horizontal */
+    align-items: center;        /* Centrado vertical */
+    z-index: 999999 !important; /* Por encima de absolutamente todo (incluso del dropdown) */
+    padding: 1rem;
+}
+
+/* 2. La tarjeta interna del modal */
+.modal-contenido {
+    background: linear-gradient(135deg, #0b3924 0%, #062417 100%); /* Tus colores */
+    border: 2px solid var(--dorado);
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
+    position: relative;         /* Para posicionar la 'X' de cerrar */
+    text-align: left;
+    animation: aparecerModal 0.25s ease-out; /* Una linda animación al abrir */
+}
+
+/* 3. Botón de cerrar (X) de la esquina superior derecha */
+.modal-cerrar {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--texto-secundario);
+    cursor: pointer;
+    transition: color 0.2s ease;
+    line-height: 1;
+}
+
+.modal-cerrar:hover {
+    color: var(--alerta);       /* Se pone rojo al pasar el mouse */
+}
+
+/* Animación sutil para que aparezca desde el centro */
+@keyframes aparecerModal {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* 📱 Ajuste extra para celulares bien chicos (ej: iPhone SE) */
+@media (max-width: 400px) {
+    .modal-contenido {
+        padding: 1.5rem 1.2rem;
+    }
+    .modal-contenido h2 {
+        font-size: 1.3rem;
+    }
+}
