@@ -78,6 +78,7 @@ header h1 {
     padding: 2.5rem 2rem;
     max-width: 400px;
     width: 100%;
+    height: auto; /* <--- Esto es clave para que estire según los botones que tenga adentro */
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
     text-align: center;
 }
@@ -284,4 +285,272 @@ input[type=number] {
         width: 100% !important;
         padding: 0.75rem !important;
     }
+}
+
+/* ==========================================================================
+   🎯 OPTIMIZACIÓN DEL FIXTURE (PREMIUM Y COMPATIBLE)
+   ========================================================================== */
+
+/* Alineación de bloques dentro de la tarjeta del partido */
+.bloque-equipo {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.bloque-equipo.local {
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.bloque-equipo.visitante {
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.nombre-equipo {
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+}
+
+.escudo {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+    filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.3));
+}
+
+/* Caja contenedora de los inputs de goles */
+.bloque-goles {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: #04170e; /* Quitamos el gris e integramos el verde oscuro */
+    padding: 0.4rem 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--borde);
+}
+
+.bloque-goles .versus {
+    font-weight: 800;
+    color: var(--dorado);
+    font-size: 0.85rem;
+    font-family: 'Graduate', serif;
+}
+
+/* Modificación del botón de guardar cuando ya tiene predicción existente */
+.btn-guardar.btn-actualizar {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.btn-guardar.btn-actualizar:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.bloque-accion .btn-guardar {
+    width: auto;
+    min-width: 110px;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+}
+
+.tarjeta-login a:hover {
+    text-decoration: underline !important;
+    color: var(--dorado-hover) !important;
+}
+
+/* ==========================================================================
+   🌐 ESTILOS BOTÓN GOOGLE Y FORMULARIO AVANZADO
+   ========================================================================== */
+
+/* Entrada de tipo Email específica */
+.grupo-input input[type="email"] {
+    width: 100%;
+    padding: 0.85rem 1.2rem;
+    background-color: #04170e;
+    border: 2px solid var(--borde);
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 600;
+}
+.grupo-input input[type="email"]:focus {
+    outline: none;
+    border-color: var(--dorado);
+}
+
+/* Separador "O BIEN" */
+.separador {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1.5rem 0;
+    color: var(--texto-secundario);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+.separador::before, .separador::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--borde);
+}
+.separador:not(:empty)::before { margin-right: .5em; }
+.separador:not(:empty)::after { margin-left: .5em; }
+
+/* Botón de Google Estilo Premium */
+.btn-google {
+    width: 100%;
+    padding: 0.8rem 1.5rem;
+    border: 2px solid #ffffff;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #062417;
+    background-color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-google:hover {
+    background-color: #f1f1f1;
+    transform: translateY(-1px);
+}
+
+.btn-google img {
+    width: 18px;
+    height: 18px;
+}
+
+/* ==========================================================================
+   🗂️ SISTEMA DE PESTAÑAS (TABS) HORIZONTALES
+   ========================================================================== */
+
+.contenedor-pestañas {
+    max-width: 100%; /* 🌟 Cambiamos a 100% para que use todo el ancho disponible */
+    margin: 1.5rem auto 0 auto;
+    padding: 0 1rem;
+    border-bottom: 2px solid var(--borde);
+    box-sizing: border-box;
+}
+
+.pestañas-scroll {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 12px; /* Un toque más de espacio abajo */
+    padding-right: 2rem;  /* 🌟 CLAVE: Le da un "colchón" a la derecha para que la última pestaña entre entera al scrollear */
+    scrollbar-width: none; 
+}
+
+.pestañas-scroll::-webkit-scrollbar {
+    display: none; 
+}
+
+.tab-btn {
+    background: #04170e;
+    color: #ffffff;
+    border: 1px solid var(--borde);
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    border-radius: 8px 8px 0 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+    background: #0b3924;
+    border-color: var(--dorado);
+}
+
+.tab-btn.active {
+    background: var(--dorado);
+    color: #062417;
+    border-color: var(--dorado);
+    transform: translateY(2px);
+}
+
+.tab-general {
+    background: #1e3a2f;
+    border-color: #34d399;
+}
+
+/* ==========================================================================
+   👤 MENU DESPLEGABLE DE PERFIL
+   ========================================================================== */
+
+.menu-perfil-contenedor {
+    position: relative;
+    display: inline-block;
+}
+
+.btn-perfil-trigger {
+    background: #124d32;
+    color: #ffffff;
+    border: 1px solid var(--dorado);
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-perfil-trigger:hover {
+    background: #1a6342;
+    box-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+}
+
+.flechita-menu {
+    font-size: 0.7rem;
+    color: var(--dorado);
+}
+
+/* El cuadro flotante oculto por defecto */
+.dropdown-perfil-contenido {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 110%;
+    background: #0b3924;
+    min-width: 180px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.6);
+    border: 1px solid var(--dorado);
+    border-radius: 8px;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+/* Mostrar cuando tiene la clase "show" */
+.dropdown-perfil-contenido.show {
+    display: block;
+    animation: fadelogin 0.2s ease;
+}
+
+.dropdown-perfil-contenido a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: left;
+    transition: background 0.2s;
+}
+
+.dropdown-perfil-contenido a:hover {
+    background: var(--dorado);
+    color: #062417;
 }

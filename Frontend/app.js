@@ -6,16 +6,71 @@ const CREDENCIALES_VALIDAS = {
     clave: "prode2026"
 };
 
+// 🌟 VARIABLE GLOBAL: Guarda qué pestaña está mirando el usuario
+let pestañaActiva = "inicio"; 
+
+// 🚀 UNIFICADO: La carga inicial de la página configurando todo el Front
 document.addEventListener("DOMContentLoaded", () => {
-    // Configurar el comportamiento del formulario de Login
+    // Inicializar accesos y navegación de pantallas
     configurarLogin();
+    configurarNavegacionLogin();
+    configurarRegistro();
+    configurarPestañas();
     
-    // Escuchar el selector de quién juega (para cuando ya esté logueado)
-    document.getElementById("select-usuario-activo").addEventListener("change", cargarTableroPartidos);
+    // 🌟 Evento para abrir/cerrar el menú de perfil
+    const btnPerfil = document.getElementById("btn-perfil");
+    if (btnPerfil) {
+        btnPerfil.addEventListener("click", (e) => {
+            e.stopPropagation(); // Evita que se cierre al instante por el clic
+            document.getElementById("dropdown-perfil").classList.toggle("show");
+        });
+    }
+
+    // Cerrar el menú si el usuario hace clic en cualquier otra parte de la pantalla
+    window.addEventListener("click", () => {
+        const dropdown = document.getElementById("dropdown-perfil");
+        if (dropdown && dropdown.classList.contains("show")) {
+            dropdown.classList.remove("show");
+        }
+    });
+
+    // Botón configurar perfil (Por ahora tira una alerta)
+    document.getElementById("btn-configurar-perfil").addEventListener("click", (e) => {
+        e.preventDefault();
+        alert("⚙️ Próximamente: Acá vas a poder cambiar tu avatar y contraseña.");
+    });
     
-    // Botón para cerrar sesión
-    document.getElementById("btn-cerrar-sesion").addEventListener("click", cerrarSesion);
+    // Escuchar el nuevo botón de cerrar sesión adentro del dropdown
+    document.getElementById("btn-cerrar-sesion-nuevo").addEventListener("click", (e) => {
+        e.preventDefault();
+        cerrarSesion();
+    });
+
+    // Chequear sesión persistente al iniciar (Fix F5)
+    verificarSesionExistente();
 });
+
+// 🌟 MANEJA EL CAMBIO ESTÉTICO Y LÓGICO DE LAS PESTAÑAS
+function configurarPestañas() {
+    const botones = document.querySelectorAll(".tab-btn");
+    
+    botones.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            // Sacamos la clase activa de todos los botones
+            botones.forEach(b => b.classList.remove("active"));
+            
+            // Le ponemos activa al botón que clickeamos
+            e.target.classList.add("active");
+            
+            // Guardamos cuál pestaña se seleccionó (fecha1, fecha2, etc.)
+            pestañaActiva = e.target.getAttribute("data-tab");
+            console.log("Cambiando a pestaña:", pestañaActiva);
+            
+            // Volvemos a renderizar el fixture con el filtro de la pestaña actual
+            cargarTableroPartidos();
+        });
+    });
+}
 
 // 1. SISTEMA DE CONTROL DE ACCESO
 function configurarLogin() {
@@ -27,117 +82,235 @@ function configurarLogin() {
 
         // Validamos contra tus datos predeterminados
         if (userInput === CREDENCIALES_VALIDAS.usuario && passInput === CREDENCIALES_VALIDAS.clave) {
+            
+            // 🌟 Guardamos la sesión (Agregamos un ID ficticio para el admin, ej: 1)
+            const usuarioLogueado = { id: 1, nombre: userInput };
+            localStorage.setItem("usuarioProde", JSON.stringify(usuarioLogueado));
+
+            // Pintamos el nombre en el header al instante
+            document.getElementById("nombre-usuario-header").innerText = userInput;
+
             // Ocultamos el login y mostramos el juego
             document.getElementById("pantalla-login").style.display = "none";
             document.getElementById("pantalla-juego").style.display = "block";
             
-            // Activamos la carga de usuarios registrados en el backend
-            cargarUsuariosDisponibles();
+            // Cargamos los partidos reglamentarios
+            cargarTableroPartidos();
         } else {
             alert("❌ Usuario o Contraseña incorrectos. ¡Intenta de nuevo!");
         }
     });
 }
 
+// Cambiar entre el formulario de Login y el de Registro
+function configurarNavegacionLogin() {
+    const linkRegistro = document.getElementById("link-ir-a-registro");
+    const linkLogin = document.getElementById("link-ir-a-login");
+    const vistaLogin = document.getElementById("vista-login");
+    const vistaRegistro = document.getElementById("vista-registro");
+
+    linkRegistro.addEventListener("click", (e) => {
+        e.preventDefault();
+        vistaLogin.style.display = "none";
+        vistaRegistro.style.display = "block";
+    });
+
+    linkLogin.addEventListener("click", (e) => {
+        e.preventDefault();
+        vistaRegistro.style.display = "none";
+        vistaLogin.style.display = "block";
+    });
+}
+
+// Enviar el nuevo usuario a la API de .NET
+function configurarRegistro() {
+    document.getElementById("form-registro").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        
+        const nuevoNombre = document.getElementById("reg-user").value.trim();
+
+        if (!nuevoNombre) return;
+
+        try {
+            const res = await fetch(`${BASE_URL}/usuarios`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    nombre: nuevoNombre
+                })
+            });
+
+            if (res.ok) {
+                alert(`🎯 ¡Usuario "${nuevoNombre}" creado con éxito! Ya podés ingresar.`);
+                document.getElementById("form-registro").reset();
+                document.getElementById("link-ir-a-login").click();
+            } else {
+                const errText = await res.text();
+                alert("❌ No se pudo crear el usuario: " + errText);
+            }
+        } catch (error) {
+            console.error("Error al registrar usuario:", error);
+            alert("Hubo un problema de conexión con el servidor.");
+        }
+    });
+}
+
+// 🌐 FLUJO DE GOOGLE AUTH
+function iniciarSesionConGoogle(e) {
+    e.preventDefault();
+    console.log("Redirigiendo a Google Auth...");
+    
+    const SUPABASE_PROJECT_URL = "https://your-project-id.supabase.co"; 
+    const redirectUrl = window.location.origin; 
+    
+    window.location.href = `${SUPABASE_PROJECT_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(redirectUrl)}`;
+}
+
 function cerrarSesion() {
+    // Borramos el localStorage para que no se autologuee de nuevo al salir
+    localStorage.removeItem("usuarioProde");
+
     // Volvemos todo a cero
     document.getElementById("form-login").reset();
     document.getElementById("pantalla-juego").style.display = "none";
     document.getElementById("pantalla-login").style.display = "flex";
-    document.getElementById("select-usuario-activo").value = "";
-    document.getElementById("contenedor-partidos").innerHTML = `<p class="cargando">Seleccioná tu usuario arriba para ver el fixture...</p>`;
+    document.getElementById("contenedor-partidos").innerHTML = "";
 }
 
-// 2. TRAER JUGADORES REGISTRADOS DE LA API
-async function cargarUsuariosDisponibles() {
-    try {
-        const res = await fetch(`${BASE_URL}/usuarios`);
-        const usuarios = await res.json();
-        const select = document.getElementById("select-usuario-activo");
-        
-        select.innerHTML = '<option value="">-- Seleccioná tu Usuario --</option>';
-        usuarios.forEach(u => {
-            select.innerHTML += `<option value="${u.id}">${u.nombre}</option>`;
-        });
-    } catch (error) {
-        console.error("Error cargando usuarios:", error);
-    }
-}
-
-// 3. DIBUJAR EL FIXTURE PRE-ARMADO
+// 2. DIBUJAR EL FIXTURE FILTRADO POR PESTAÑAS
 async function cargarTableroPartidos() {
-    const usuarioId = document.getElementById("select-usuario-activo").value;
     const contenedor = document.getElementById("contenedor-partidos");
     
-    if (!usuarioId) {
-        contenedor.innerHTML = `<p class="cargando">Seleccioná un usuario arriba para ver el fixture y tus jugadas.</p>`;
+    // Buscamos el usuario de la sesión activa en localStorage
+    const usuarioGuardado = localStorage.getItem("usuarioProde");
+    if (!usuarioGuardado) return;
+    
+    const usuario = JSON.parse(usuarioGuardado);
+    
+    // Si no hay ID válido, usamos el del admin o dejamos pasar para que intente
+    const usuarioId = usuario.id || 1; 
+
+    // Control de la pestaña de Posiciones Generales
+    if (pestañaActiva === "general") {
+        contenedor.innerHTML = `
+            <div class="tarjeta-formulario" style="text-align: center; color: white;">
+                <h2>📊 Tabla de Posiciones Generales</h2>
+                <p>Acá va a ir la tabla con los puntajes acumulados de todos los pibes de la app.</p>
+            </div>`;
+        return;
+    }
+
+    // Pestaña Inicio
+    if (pestañaActiva === "inicio") {
+        contenedor.innerHTML = `
+            <div class="tarjeta-formulario" style="text-align: center; color: white; padding: 2rem;">
+                <h2>⚽ ¡Bienvenido al Prode Mundial 2026!</h2>
+                <p>Seleccioná cualquiera de las fechas arriba en la barra para empezar a tirar tus pronósticos.</p>
+            </div>`;
         return;
     }
 
     try {
-        const [resPartidos, resEquipos, resPredicciones] = await Promise.all([
+        // 🌟 PASO 1: Traemos Partidos y Equipos en paralelo
+        const [resPartidos, resEquipos] = await Promise.all([
             fetch(`${BASE_URL}/partidos`),
-            fetch(`${BASE_URL}/equipos`),
-            fetch(`${BASE_URL}/predicciones?uId=${usuarioId}`)
+            fetch(`${BASE_URL}/equipos`)
         ]);
 
         const partidos = await resPartidos.json();
         const equipos = await resEquipos.json();
-        const prediccionesUsuario = await resPredicciones.json();
+
+        if (partidos.length > 0) {
+    console.log("👉 PROPIEDADES DEL PARTIDO DE LA BD:", partidos[0]);
+}
+
+        // 🌟 PASO 2: Traemos predicciones aisladas en su propio try/catch
+        // Si la API tira 400 (Bad Request), el catch lo atrapa y el fixture se muestra igual en cero
+        let prediccionesUsuario = [];
+        try {
+            const resPredicciones = await fetch(`${BASE_URL}/predicciones?uId=${usuarioId}`);
+            if (resPredicciones.ok) {
+                prediccionesUsuario = await resPredicciones.json();
+            } else {
+                console.warn(`⚠️ La API de predicciones devolvió status ${resPredicciones.status}. Se continúa con fixture limpio.`);
+            }
+        } catch (errPred) {
+            console.warn("❌ Error de red al consultar predicciones, se ignora:", errPred);
+        }
 
         const mapaEquipos = {};
-        // .NET devuelve 'id' en minúscula
         equipos.forEach(e => mapaEquipos[e.id] = e); 
 
         const mapaPredicciones = {};
-        // .NET devuelve 'partidoId' en camelCase
         prediccionesUsuario.forEach(p => mapaPredicciones[p.partidoId] = p); 
 
         contenedor.innerHTML = "";
 
-        if (partidos.length === 0) {
-            contenedor.innerHTML = `<p class="cargando">No hay partidos cargados en la API. Cargalos desde Supabase.</p>`;
+        // 🌟 PASO 3: Filtrar los partidos que corresponden a la pestaña
+        // 🌟 PASO 3: Filtrar los partidos usando los IDs reales de tu Base de Datos
+        // Agregá acá adentro los códigos GUID de las demás fechas a medida que las crees
+        const equivalenciasFechas = {
+            "03ad09d5-7d3e-4d0e-a473-cbd8837fe590": "fecha1", // 👈 Este es el ID real de tu captura
+            "AQUÍ_EL_ID_DE_LA_FECHA_2": "fecha2",
+            "AQUÍ_EL_ID_DE_LA_FECHA_3": "fecha3",
+            "AQUÍ_EL_ID_DE_16AVOS": "16avos",
+            "AQUÍ_EL_ID_DE_OCTAVOS": "octavos",
+            "AQUÍ_EL_ID_DE_CUARTOS": "cuartos",
+            "AQUÍ_EL_ID_DE_SEMIS": "semis",
+            "AQUÍ_EL_ID_DE_LA_FINAL": "final"
+        };
+
+        const partidosFiltrados = partidos.filter(p => {
+            if (!p.fechaId) return false; // Cambiado a 'fechaId' que es tu campo real
+
+            // Buscamos a qué pestaña de texto pertenece este ID de la BD
+            const pestañaAsociada = equivalenciasFechas[p.fechaId];
+
+            // Comparamos si coincide con la pestaña que el usuario tiene abierta
+            return pestañaAsociada === pestañaActiva;
+        });
+
+        if (partidosFiltrados.length === 0) {
+            contenedor.innerHTML = `<p class="cargando">No hay partidos cargados para la sección: <b>${pestañaActiva}</b> todavía.</p>`;
             return;
         }
 
-        partidos.forEach(partido => {
-            // CORRECCIÓN: .NET manda 'localId' y 'visitanteId' en camelCase
+        // 🌟 PASO 4: Dibujar las tarjetas en la pantalla
+        partidosFiltrados.forEach(partido => {
             const local = mapaEquipos[partido.localId] || { nombre: "Local", logoUrl: "" };
             const visitante = mapaEquipos[partido.visitanteId] || { nombre: "Visitante", logoUrl: "" };
 
-            // CORRECCIÓN: .NET manda 'id' en minúscula
             const jugadaExistente = mapaPredicciones[partido.id]; 
             
-            // CORRECCIÓN: Cambiado a 'golesLocalVoto' y 'golesVisitanteVoto' como tus DTOs de C#
             const golesLocalDefault = jugadaExistente ? jugadaExistente.golesLocalVoto : 0;
             const golesVisitanteDefault = jugadaExistente ? jugadaExistente.golesVisitanteVoto : 0;
             
             const textoBoton = jugadaExistente ? "Actualizar" : "Arriesgar";
-            const colorBoton = jugadaExistente ? "#059669" : "#0ea5e9"; 
+            const claseBoton = jugadaExistente ? "btn-guardar btn-actualizar" : "btn-guardar"; 
 
             const fila = document.createElement("div");
             fila.className = "tarjeta-formulario";
-            fila.style = "margin-bottom: 12px;";
+            fila.style = "margin-bottom: 16px;"; 
             
             fila.innerHTML = `
-                <div style="flex: 1; text-align: right; display: flex; align-items: center; justify-content: flex-end; gap: 10px;">
-                    <span style="font-weight: bold;">${local.nombre}</span>
-                    <img src="${local.logoUrl}" onerror="this.src='https://placehold.co/40?text=F'" style="width:40px; height:40px; object-fit:contain;">
+                <div class="bloque-equipo local">
+                    <span class="nombre-equipo">${local.nombre}</span>
+                    <img src="${local.logoUrl}" onerror="this.src='https://placehold.co/40?text=⚽'" class="escudo">
                 </div>
 
-                <div style="display: flex; align-items: center; gap: 0.5rem; background: #e2e8f0; padding: 0.5rem 1rem; border-radius: 8px;">
-                    <input type="number" id="pred-local-${partido.id}" min="0" value="${golesLocalDefault}" style="width: 50px; text-align: center; font-weight: bold; color: black;">
-                    <span style="font-weight: bold; color: #64748b;">vs</span>
-                    <input type="number" id="pred-visitante-${partido.id}" min="0" value="${golesVisitanteDefault}" style="width: 50px; text-align: center; font-weight: bold; color: black;">
+                <div class="bloque-goles">
+                    <input type="number" id="pred-local-${partido.id}" min="0" value="${golesLocalDefault}">
+                    <span class="versus">VS</span>
+                    <input type="number" id="pred-visitante-${partido.id}" min="0" value="${golesVisitanteDefault}">
                 </div>
 
-                <div style="flex: 1; text-align: left; display: flex; align-items: center; justify-content: flex-start; gap: 10px;">
-                    <img src="${visitante.logoUrl}" onerror="this.src='https://placehold.co/40?text=F'" style="width:40px; height:40px; object-fit:contain;">
-                    <span style="font-weight: bold;">${visitante.nombre}</span>
+                <div class="bloque-equipo visitante">
+                    <img src="${visitante.logoUrl}" onerror="this.src='https://placehold.co/40?text=⚽'" class="escudo">
+                    <span class="nombre-equipo">${visitante.nombre}</span>
                 </div>
 
-                <div>
-                    <button class="btn-guardar" onclick="guardarPrediccion('${partido.id}')" style="padding: 0.5rem 1rem; font-size: 0.9rem; width: auto; background-color: ${colorBoton};">
+                <div class="bloque-accion">
+                    <button class="${claseBoton}" onclick="guardarPrediccion('${partido.id}')">
                         ${textoBoton}
                     </button>
                 </div>
@@ -146,22 +319,25 @@ async function cargarTableroPartidos() {
         });
 
     } catch (error) {
-        console.error("Error al armar el tablero:", error);
+        console.error("❌ Error crítico al armar el tablero:", error);
+        contenedor.innerHTML = `<p class="cargando" style="color: #ef4444;">Hubo un error al cargar los datos del servidor.</p>`;
     }
 }
 
-
-// BUSCÁ ESTA FUNCIÓN AL FINAL DE TU app.js Y REEMPLAZALA:
+// 3. GUARDAR JUGADA EN LA API
 async function guardarPrediccion(partidoId) {
-    const usuarioId = document.getElementById("select-usuario-activo").value;
-    const golesLocal = parseInt(document.getElementById(`pred-local-${partidoId}`).value);
-    const golesVisitante = parseInt(document.getElementById(`pred-visitante-${partidoId}`).value);
-
-    // Validación de seguridad por si le da al botón sin elegir usuario
-    if (!usuarioId) {
-        alert("⚠️ Por favor, seleccioná quién está cargando arriba antes de arriesgar.");
+    // 🌟 CORRECCIÓN CLAVE: Sacamos el ID del usuario directamente del localStorage
+    const usuarioGuardado = localStorage.getItem("usuarioProde");
+    if (!usuarioGuardado) {
+        alert("⚠️ No se detectó una sesión activa. Volvé a ingresar.");
         return;
     }
+    
+    const usuario = JSON.parse(usuarioGuardado);
+    const usuarioId = usuario.id;
+
+    const golesLocal = parseInt(document.getElementById(`pred-local-${partidoId}`).value);
+    const golesVisitante = parseInt(document.getElementById(`pred-visitante-${partidoId}`).value);
 
     try {
         const res = await fetch(`${BASE_URL}/predicciones`, {
@@ -185,5 +361,24 @@ async function guardarPrediccion(partidoId) {
     } catch (error) {
         console.error("Error en la conexión:", error);
         alert("No se pudo conectar con el servidor para guardar tu jugada.");
+    }
+}
+
+// 4. CONTROLADOR DE PERSISTENCIA (FIX F5)
+function verificarSesionExistente() {
+    const usuarioGuardado = localStorage.getItem("usuarioProde");
+
+    if (usuarioGuardado) {
+        const usuario = JSON.parse(usuarioGuardado); 
+        
+        // Pintamos el nombre real del usuario en el botón del perfil
+        document.getElementById("nombre-usuario-header").innerText = usuario.nombre;
+
+        // Saltamos el login directo al juego
+        document.getElementById("pantalla-login").style.display = "none";
+        document.getElementById("pantalla-juego").style.display = "block";
+
+        // Renderizamos los partidos que correspondan a la pestaña activa por defecto
+        cargarTableroPartidos();
     }
 }
