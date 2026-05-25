@@ -1,5 +1,5 @@
 /* ==========================================================================
-   🏆 ESTILOS PRODE MUNDIAL 2026 - VERSIÓN CORREGIDA Y UNIFICADA
+   🏆 ESTILOS PRODE MUNDIAL 2026 - CORREGIDO Y DISTRIBUIDO
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Graduate&family=Outfit:wght@400;600;800;900&display=swap');
@@ -29,18 +29,18 @@ body {
     min-height: 100vh;
 }
 
-/* 📥 CONTENEDOR DE JUEGO */
+/* 📥 CONTENEDOR DE JUEGO (Expandido para que use la pantalla armoniosamente) */
 .contenedor {
-    max-width: 850px;
+    max-width: 1200px;
     width: 100%;
     margin: 0 auto;
-    padding: 1.5rem 1rem;
+    padding: 2rem 3rem; /* Más aire en los laterales para despegar del borde */
 }
 
-/* 🚀 HEADER CON CONTENIDO EN EXTREMOS (Usuario Arriba a la Derecha) */
+/* 🚀 HEADER CON CONTENIDO EN EXTREMOS */
 header {
     background: linear-gradient(180deg, #09311f 0%, #062417 100%);
-    padding: 1.5rem 2rem;
+    padding: 1.5rem 3rem; /* Colchón para separar los textos y el perfil de los bordes del monitor */
     border-bottom: 4px solid var(--dorado);
     box-shadow: 0 5px 25px rgba(0, 0, 0, 0.6);
 }
@@ -49,13 +49,20 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    max-width: 1200px;
     width: 100%;
-    gap: 1rem;
+    margin: 0 auto;
+    gap: 1.5rem;
+}
+
+/* Bloque de texto tirado a la izquierda pero con aire */
+.header-presentacion {
+    text-align: left;
 }
 
 header h1 {
     font-family: 'Graduate', serif; 
-    font-size: 2rem;
+    font-size: 2.2rem;
     color: var(--dorado);
     text-shadow: 0 3px 6px rgba(0, 0, 0, 0.8);
 }
@@ -88,7 +95,7 @@ header p {
     backdrop-filter: blur(10px); 
     border: 2px solid var(--dorado);
     border-radius: 20px;
-    padding: 1.5rem 2rem;          /* Reducido para evitar scroll en creación de usuario */
+    padding: 1.5rem 2rem;
     max-width: 420px;
     width: 100%;
     max-height: 90vh;            
@@ -97,7 +104,6 @@ header p {
     text-align: center;
 }
 
-/* Ocultamos barra de scroll de la tarjeta de login para mantenerla estética */
 .tarjeta-login::-webkit-scrollbar {
     width: 4px;
 }
@@ -121,10 +127,9 @@ header p {
 .tarjeta-login p {
     color: var(--texto-secundario);
     font-size: 0.95rem;
-    margin-bottom: 1rem;          /* Reducido para ganar espacio vertical */
+    margin-bottom: 1rem;
 }
 
-/* 🧭 BLOQUE DE OPCIONES INICIALES */
 .bloque-opciones-iniciales {
     display: flex;
     flex-direction: column;
@@ -133,9 +138,8 @@ header p {
     margin-top: 0.5rem;
 }
 
-/* 🗂️ COMPONENTES DE FORMULARIO */
 .grupo-input {
-    margin-bottom: 0.8rem;        /* Compactado de 1.2rem a 0.8rem para que entre todo en una pantalla */
+    margin-bottom: 0.8rem;
     text-align: left;
 }
 
@@ -144,7 +148,7 @@ header p {
     font-size: 0.8rem;            
     font-weight: 800;
     color: var(--dorado);
-    margin-bottom: 0.3rem;        /* Reducido para ahorrar espacio */
+    margin-bottom: 0.3rem;
     text-transform: uppercase;
 }
 
@@ -153,7 +157,7 @@ header p {
 .grupo-input input[type="email"],
 select {
     width: 100%;
-    padding: 0.7rem 1rem;         /* Menos alto interno para optimizar el espacio vertical */
+    padding: 0.7rem 1rem;
     background-color: #04170e;
     border: 2px solid var(--borde);
     border-radius: 10px;
@@ -162,7 +166,6 @@ select {
     font-weight: 600;
 }
 
-/* 🔘 BOTONES PRINCIPALES */
 .btn-guardar {
     width: 100%;
     padding: 0.9rem 1.5rem;
@@ -182,7 +185,6 @@ select {
     transform: translateY(-1px);
 }
 
-/* 🌐 BOTÓN EXCLUSIVO DE GOOGLE */
 .btn-google {
     display: flex;
     align-items: center;
@@ -211,10 +213,9 @@ select {
     height: 18px;
 }
 
-/* 🔗 LINKS DE VOLVER Y AYUDA */
 .link-volver {
     display: inline-block;
-    margin-top: 0.8rem;           /* Reducido para mantenerlo visible sin scrollear */
+    margin-top: 0.8rem;
     color: var(--texto-secundario);
     font-size: 0.9rem;
     font-weight: 600;
@@ -241,42 +242,34 @@ select {
     text-decoration: underline;
 }
 
-/* 🗂️ BARRA DE FECHAS CON SCROLL HORIZONTAL (ESCRITORIO) */
+/* 🗂️ BARRA DE PESTAÑAS (Cubre de punta a punta de forma equilibrada) */
 .contenedor-pestañas-escritorio {
     width: 100%;
-    margin: 1.5rem 0;
-    border-bottom: 2px solid var(--borde);
+    max-width: 1200px;
+    margin: 1.5rem auto 0 auto;
+    padding: 0 3rem; /* Sincronizado con el aire del header */
 }
 
 .pestañas-scroll {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
-    gap: 6px;
-    overflow-x: auto !important;
-    overflow-y: hidden;
-    padding-bottom: 8px;
-    -webkit-overflow-scrolling: touch;
-}
-
-/* Ocultamos las barras de scroll nativas */
-.pestañas-scroll::-webkit-scrollbar {
-    display: none !important;
-}
-.pestañas-scroll {
-    scrollbar-width: none !important;
+    gap: 8px;
+    width: 100%;
+    justify-content: space-between; /* Distribuye las pestañas a lo ancho de la pantalla */
 }
 
 .tab-btn {
     background: #04170e;
     color: #ffffff;
     border: 1px solid var(--borde);
-    padding: 0.6rem 1.1rem;
+    padding: 0.7rem 1rem;
     font-size: 0.9rem;
     font-weight: 700;
     border-radius: 8px 8px 0 0;
     cursor: pointer;
-    flex-shrink: 0 !important; 
+    flex-grow: 1; /* Hace que todas las pestañas se estiren igual cubriendo el total */
+    text-align: center;
     transition: all 0.15s ease;
 }
 
@@ -375,19 +368,18 @@ select {
     text-align: center !important;
 }
 
-/* Bloque de Acción Oculto */
 .bloque-accion {
     display: none !important;
 }
 
-/* 📥 CONTENEDOR BOTÓN GLOBAL DE GUARDAR */
+/* 📥 CONTENEDOR BOTÓN GLOBAL */
 .contenedor-boton-global {
     display: flex;
     justify-content: center;  
     align-items: center;
     width: 100%;
-    margin-top: 2rem;         
-    padding-bottom: 2rem;     
+    margin-top: 2rem;          
+    padding-bottom: 2rem;      
 }
 
 .btn-guardar-global {
@@ -463,7 +455,6 @@ select {
     color: #062417;
 }
 
-/* El botón de menú desplegable de fechas para celulares se oculta en PC */
 .contenedor-desplegable-fechas {
     display: none !important; 
 }
@@ -472,13 +463,12 @@ select {
    📱 ADAPTACIÓN OPTIMIZADA EXCLUSIVA PARA CELULARES (MÁXIMO 650PX)
    ========================================================================== */
 @media (max-width: 650px) {
-    
     header {
         padding: 1rem;
     }
     
     .header-contenido {
-        align-items: flex-start; 
+        align-items: center; 
     }
 
     header h1 {
@@ -494,7 +484,10 @@ select {
         font-size: 0.8rem;
     }
 
-    /* ⚽ AJUSTE DEL FIXTURE HORIZONTAL EN CELULAR */
+    .contenedor {
+        padding: 1rem 1rem;
+    }
+
     .tarjeta-formulario {
         padding: 0.8rem 0.6rem !important;
         gap: 0.3rem !important;
@@ -526,20 +519,19 @@ select {
         padding: 0.9rem 1.5rem;
     }
 
-    /* 🚫 OCULTAMOS LAS PESTAÑAS HORIZONTALES */
+    /* Ocultamos las pestañas estiradas en Mobile */
     .contenedor-pestañas-escritorio, 
     #pestañas-contenedor, 
     .pestañas-scroll {
         display: none !important;
     }
 
-    /* 🟢 MOSTRAMOS EL DESPLEGABLE FLOTANTE DE FECHAS */
     .contenedor-desplegable-fechas {
         display: flex !important;
         justify-content: center !important; 
         align-items: center !important;
         width: 100% !important;
-        margin: 1rem auto 1.5rem auto !important;
+        margin: 1rem auto 0 auto !important;
         position: relative !important;      
     }
 

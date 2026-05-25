@@ -13,13 +13,13 @@
             <div class="icono-copa">🏆</div>
             
             <h2 id="titulo-bienvenida">¡BIENVENIDO AL PRODE MUNDIALISTA!</h2>
-            <p id="subtitulo-bienvenida" style="color: #ffffff; opacity: 0.9; margin-bottom: 1.5rem; font-size: 0.95rem; text-align: center;">
+            <p id="subtitulo-bienvenida">
                 Elegí cómo querés ingresar a tirar tus pronósticos
             </p>
 
-            <div id="bloque-opciones-iniciales" style="display: flex; flex-direction: column; gap: 1rem; width: 100%;">
-                <button type="button" id="btn-elegir-ingreso" class="btn-guardar" style="width: 100%;">INICIAR SESIÓN</button>
-                <button type="button" id="btn-elegir-registro" class="btn-guardar" style="width: 100%;">CREAR USUARIO</button>
+            <div id="bloque-opciones-iniciales" class="bloque-opciones-iniciales">
+                <button type="button" id="btn-elegir-ingreso" class="btn-guardar">INICIAR SESIÓN</button>
+                <button type="button" id="btn-elegir-registro" class="btn-guardar">CREAR USUARIO</button>
             </div>
             
             <div id="vista-login" style="display: none; width: 100%;">
@@ -40,8 +40,8 @@
                         <span style="flex: 1; border-bottom: 1px solid var(--borde); margin-left: .5em;"></span>
                     </div>
 
-                    <button type="button" class="btn-google" id="btn-google-login" style="width: 100%; padding: 0.8rem 1.5rem; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700; color: #062417; background-color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width: 18px; height: 18px;">
+                    <button type="button" class="btn-google" id="btn-google-login">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google">
                         Google
                     </button>
                 </form>
@@ -84,8 +84,8 @@
                         <span style="flex: 1; border-bottom: 1px solid var(--borde); margin-left: .5em;"></span>
                     </div>
 
-                    <button type="button" class="btn-google" id="btn-google-register" style="width: 100%; padding: 0.8rem 1.5rem; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700; color: #062417; background-color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width: 18px; height: 18px;">
+                    <button type="button" class="btn-google" id="btn-google-register">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google">
                         Google
                     </button>
                 </form>
@@ -94,16 +94,15 @@
                     <a href="#" id="btn-volver-registro" style="color: var(--dorado); text-decoration: none; font-weight: bold;">← Volver atrás</a>
                 </p>
             </div>
-
         </section>
     </div>
 
     <div id="pantalla-juego" style="display: none;">
-        <header style="padding: 1rem 0; background: rgba(4, 23, 14, 0.9);">
-            <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto; padding: 0 1rem;">
-                <div style="text-align: left;">
-                    <h1 style="margin: 0; font-size: 1.8rem; color: var(--dorado);">PRODE MUNDIAL 2026</h1>
-                    <p style="color: #ffffff; opacity: 0.9; margin: 5px 0 0 0; font-size: 0.9rem;">Navegá por las fechas y cargá tus resultados</p>
+        <header>
+            <div class="header-contenido">
+                <div class="header-presentacion">
+                    <h1>PRODE MUNDIAL 2026</h1>
+                    <p>Navegá por las fechas y cargá tus resultados</p>
                 </div>
                 <div class="menu-perfil-contenedor">
                     <button id="btn-perfil" class="btn-perfil-trigger">
