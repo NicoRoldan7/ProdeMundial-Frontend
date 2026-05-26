@@ -650,13 +650,12 @@ select {
 
 /* AQUÍ ESTÁ EL CAMBIO: 'fixed' para despegarlo del header y que no se corte */
 #dropdown-fechas-contenido {
+    display: none; /* ESTO ES LO QUE LO OCULTA AL ENTRAR */
+    position: absolute;
     background-color: #0b3924 !important; 
-    box-shadow: 0px 15px 35px rgba(0,0,0,0.9) !important; 
     border: 2px solid var(--dorado) !important;
     border-radius: 8px;
-    padding: 5px 0;
-    max-height: 250px;      
-    overflow-y: auto;       
+    z-index: 99999999;
 }
 
 #dropdown-fechas-contenido.mostrar-fechas { 

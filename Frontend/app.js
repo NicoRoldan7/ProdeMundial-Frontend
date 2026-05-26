@@ -217,26 +217,35 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 📱 NUEVA LÓGICA EXCLUSIVA: DESPLEGABLE DE FECHAS PARA CELULARES
     // =========================================================================
   // 📱 FIX RADICAL: El menú se mueve al body y se posiciona inline
+// 📱 FIX: Solo mover al body si es pantalla chica (Móvil)
 const btnFechas = document.getElementById("btn-fechas-trigger");
 const dropdownFechas = document.getElementById("dropdown-fechas-contenido");
 
 if (btnFechas && dropdownFechas) {
-    // 1. Mover al body
-    document.body.appendChild(dropdownFechas);
+    // Aseguramos que esté oculto al iniciar
+    dropdownFechas.style.display = "none";
 
     btnFechas.addEventListener("click", (e) => {
         e.stopPropagation();
-        
-        // 2. Calcular posición exacta
-        const rect = btnFechas.getBoundingClientRect();
-        
-        // 3. Aplicar estilos en línea (los más fuertes de todos)
-        dropdownFechas.style.display = dropdownFechas.style.display === "block" ? "none" : "block";
-        dropdownFechas.style.position = "absolute";
-        dropdownFechas.style.top = (rect.bottom + window.scrollY) + "px";
-        dropdownFechas.style.left = rect.left + "px";
-        dropdownFechas.style.zIndex = "99999999"; // Valor absurdo para ganar siempre
-        dropdownFechas.style.width = "220px";
+
+        // Si está oculto, lo mostramos y posicionamos
+        if (dropdownFechas.style.display === "none") {
+            // Mover al body solo si es móvil para evitar conflictos
+            if (window.innerWidth <= 650) {
+                document.body.appendChild(dropdownFechas);
+            }
+
+            const rect = btnFechas.getBoundingClientRect();
+            dropdownFechas.style.display = "block";
+            dropdownFechas.style.position = "absolute";
+            dropdownFechas.style.top = (rect.bottom + window.scrollY) + "px";
+            dropdownFechas.style.left = "50%";
+            dropdownFechas.style.transform = "translateX(-50%)";
+            dropdownFechas.style.zIndex = "99999999";
+        } else {
+            // Si ya está visible, lo ocultamos
+            dropdownFechas.style.display = "none";
+        }
     });
 
     // Cerrar al hacer clic fuera
