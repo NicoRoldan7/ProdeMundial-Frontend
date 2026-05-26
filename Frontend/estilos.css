@@ -42,6 +42,10 @@ body {
 /* 🚀 HEADER CON CONTENIDO EN EXTREMOS */
 header { 
     /* Cambiamos el primer color a RGBA para darle transparencia desde el inicio */
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
     background: linear-gradient(180deg, rgba(9, 49, 31, 0.2) 0%, rgba(6, 36, 23, 0.2) 100%);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px); /* Para asegurar compatibilidad en Safari/iOS */
