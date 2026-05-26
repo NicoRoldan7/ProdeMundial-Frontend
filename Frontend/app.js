@@ -82,6 +82,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     // =========================================================================
 
+    
+
     // Inicializar accesos y navegación de pantallas
     configurarLogin();
     configurarNavegacionLogin(); 
@@ -204,6 +206,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
     
+    function cerrarTodosLosMenus() {
+    const dropdownFechas = document.getElementById("dropdown-fechas-contenido");
+    const dropdownPerfil = document.getElementById("dropdown-perfil");
+    
+    if (dropdownFechas) dropdownFechas.style.display = "none";
+    if (dropdownPerfil) dropdownPerfil.classList.remove("show");
+}
+    
     // Escuchar el botón de cerrar sesión
     const btnCerrar = document.getElementById("btn-cerrar-sesion-nuevo");
     if (btnCerrar) {
@@ -267,6 +277,7 @@ if (btnFechas && dropdownFechas) {
     // Chequear sesión persistente al iniciar (Fix F5)
     verificarSesionExistente();
 });
+
 
 // =========================================================================
 // 🔄 1. SISTEMA DE CONTROL DE ACCESO (TRADICIONAL)
