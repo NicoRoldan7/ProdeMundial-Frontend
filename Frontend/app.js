@@ -216,19 +216,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     // =========================================================================
     // 📱 NUEVA LÓGICA EXCLUSIVA: DESPLEGABLE DE FECHAS PARA CELULARES
     // =========================================================================
-    const btnFechas = document.getElementById("btn-fechas-trigger");
-    const dropdownFechas = document.getElementById("dropdown-fechas-contenido");
+  // 📱 FIX RADICAL: El menú se mueve al body y se posiciona inline
+const btnFechas = document.getElementById("btn-fechas-trigger");
+const dropdownFechas = document.getElementById("dropdown-fechas-contenido");
 
-    if (btnFechas && dropdownFechas) {
-        btnFechas.addEventListener("click", (e) => {
-            e.stopPropagation(); 
-            dropdownFechas.classList.toggle("mostrar-fechas");
-        });
+if (btnFechas && dropdownFechas) {
+    // 1. Mover al body
+    document.body.appendChild(dropdownFechas);
 
-        window.addEventListener("click", () => {
-            dropdownFechas.classList.remove("mostrar-fechas");
-        });
-    }
+    btnFechas.addEventListener("click", (e) => {
+        e.stopPropagation();
+        
+        // 2. Calcular posición exacta
+        const rect = btnFechas.getBoundingClientRect();
+        
+        // 3. Aplicar estilos en línea (los más fuertes de todos)
+        dropdownFechas.style.display = dropdownFechas.style.display === "block" ? "none" : "block";
+        dropdownFechas.style.position = "absolute";
+        dropdownFechas.style.top = (rect.bottom + window.scrollY) + "px";
+        dropdownFechas.style.left = rect.left + "px";
+        dropdownFechas.style.zIndex = "99999999"; // Valor absurdo para ganar siempre
+        dropdownFechas.style.width = "220px";
+    });
+
+    // Cerrar al hacer clic fuera
+    window.addEventListener("click", () => {
+        dropdownFechas.style.display = "none";
+    });
+}
     // =========================================================================
 
     // =========================================================================

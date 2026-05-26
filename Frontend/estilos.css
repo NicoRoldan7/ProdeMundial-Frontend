@@ -340,6 +340,10 @@ select {
     margin-bottom: 0.8rem;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     
+    /* Asignamos una posición y capa base de renderizado baja */
+    position: relative !important;
+    z-index: 1 !important; 
+
     /* Animación al renderizar */
     animation: aparecerDesdeAbajo 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
     
@@ -543,7 +547,7 @@ select {
 }
 
 /* ==========================================================================
-   📱 ADAPTACIÓN OPTIMIZADA EXCLUSIVA PARA CELULARES (MÁXIMO 650PX)
+    📱 ADAPTACIÓN OPTIMIZADA EXCLUSIVA PARA CELULARES (MÁXIMO 650PX)
    ========================================================================== */
 @media (max-width: 650px) {
     header {
@@ -571,9 +575,12 @@ select {
         padding: 1rem 1rem;
     }
 
+    /* Forzamos a las tarjetas a quedarse en una capa baja exclusiva en Mobile */
     .tarjeta-formulario {
         padding: 0.8rem 0.6rem !important;
         gap: 0.3rem !important;
+        position: relative !important;
+        z-index: 1 !important; 
     }
 
     .nombre-equipo {
@@ -609,74 +616,82 @@ select {
         display: none !important;
     }
 
-    .contenedor-desplegable-fechas {
-        display: flex !important;
-        justify-content: center !important; 
-        align-items: center !important;
-        width: 100% !important;
-        margin: 1rem auto 0 auto !important;
-        position: relative !important;      
-    }
+/* ==========================================================================
+   🚀 FIX DEFINITIVO PARA EL DESPLEGABLE MOBILE
+   ========================================================================== */
 
-    .btn-fechas-menu {
-        background: #04170e;
-        color: #ffffff;
-        border: 2px solid var(--dorado); 
-        padding: 0.65rem 1.2rem;
-        font-size: 1rem;
-        font-weight: 700;
-        border-radius: 8px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 220px;          
-        gap: 10px;
-    }
+/* Aseguramos que el botón no sea bloqueado por nada */
+.contenedor-desplegable-fechas {
+    display: flex !important;
+    justify-content: center !important; 
+    align-items: center !important;
+    width: 100% !important;
+    margin: 1rem auto 0 auto !important;
+    position: relative !important;      
+    z-index: 999999 !important; 
+}
 
-    .dropdown-fechas-lista {
-        display: none;        
-        position: absolute !important; 
-        top: 110%;              
-        left: 50% !important;
-        transform: translateX(-50%) !important; 
-        background: #0b3924;
-        width: 220px;           
-        max-height: 250px;      
-        overflow-y: auto;       
-        box-shadow: 0px 8px 24px rgba(0,0,0,0.7);
-        border: 1px solid var(--borde);
-        border-radius: 8px;
-        z-index: 99999 !important; 
-        padding: 5px 0;
-    }
+.btn-fechas-menu {
+    background: #04170e;
+    color: #ffffff;
+    border: 2px solid var(--dorado); 
+    padding: 0.65rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 220px;          
+    gap: 10px;
+    z-index: 1000000 !important;
+}
 
-    .dropdown-fechas-lista.mostrar-fechas {
-        display: block !important;
-    }
+/* AQUÍ ESTÁ EL CAMBIO: 'fixed' para despegarlo del header y que no se corte */
+#dropdown-fechas-contenido {
+    background-color: #0b3924 !important; 
+    box-shadow: 0px 15px 35px rgba(0,0,0,0.9) !important; 
+    border: 2px solid var(--dorado) !important;
+    border-radius: 8px;
+    padding: 5px 0;
+    max-height: 250px;      
+    overflow-y: auto;       
+}
 
-    .dropdown-fechas-lista .tab-btn {
-        display: block !important;
-        width: 100% !important;
+#dropdown-fechas-contenido.mostrar-fechas { 
+    display: block !important; 
+}
+
+/* Aseguramos que el header no limite el desborde */
+header {
+    overflow: visible !important;
+}
+
+    #dropdown-fechas-contenido .tab-btn {
         background: transparent !important;
         color: #ffffff !important;
         border: none !important;
-        padding: 10px 16px !important;
-        text-align: left !important;
-        font-size: 0.95rem !important;
         border-radius: 0 !important;
-        margin: 0 !important;
+        width: 100% !important;
+        display: block !important;
+        padding: 10px 14px !important;
+        text-align: left !important;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
     }
 
-    .dropdown-fechas-lista .tab-btn:hover {
+    #dropdown-fechas-contenido .tab-btn:hover {
         background: var(--dorado) !important;
         color: #062417 !important;
     }
 
-    .dropdown-fechas-lista .tab-btn.active {
+    #dropdown-fechas-contenido .tab-btn.active {
         background: #165b3b !important;
         color: var(--dorado) !important;
         font-weight: bold;
+        transform: none !important;
     }
 }
 
