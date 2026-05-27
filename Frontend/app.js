@@ -759,25 +759,44 @@ function verificarSesionExistente() {
 
 function configurarPestañas() {
     const botonesPestañas = document.querySelectorAll(".tab-btn");
-    // Buscamos el contenedor principal de las secciones
     const mainContenedor = document.querySelector("main.contenedor");
+    
+    // 📱 Traemos los elementos del menú del celular
+    const textoFechaActiva = document.getElementById("texto-fecha-activa");
+    const dropdownFechas = document.getElementById("dropdown-fechas-contenido");
 
     botonesPestañas.forEach(boton => {
         boton.addEventListener("click", (e) => {
             e.preventDefault();
             const pestañaSeleccionada = boton.getAttribute("data-tab");
             
-            // 1. Limpieza visual de botones superiores
+            // 1. Limpieza visual de botones superiores (Saca el 'active' de todos y se lo pone al que tocaste)
             botonesPestañas.forEach(b => b.classList.remove("active"));
-            boton.classList.add("active");
+            
+            // Buscamos todos los botones que apunten a la misma pestaña (celu y compu) y los activamos
+            document.querySelectorAll(`.tab-btn[data-tab="${pestañaSeleccionada}"]`).forEach(b => {
+                b.classList.add("active");
+            });
 
-            // 🌟 TRUCO CLAVE: Guardamos la pestaña actual en el HTML al instante del clic.
-            // Esto evita cualquier tipo de parpadeo visual porque el CSS reacciona en 0 milisegundos.
+            // 🌟 1.5 CONTROL PARA CELULARES
+            // Si existe el texto del celular, le cambiamos el nombre por el del botón que tocó
+            if (textoFechaActiva) {
+                textoFechaActiva.innerText = boton.innerText.replace("▼", "").trim();
+            }
+            
+            // Cerramos el desplegable del celular automáticamente después de hacer clic
+            if (dropdownFechas) {
+                dropdownFechas.classList.remove("mostrar"); // o style.display = "none" según cómo manejes tu menú de celu
+                // Si manejás el menú del celular con inline styles, podés probar descomentar la línea de abajo:
+                // dropdownFechas.style.display = "none";
+            }
+
+            // 2. TRUCO CLAVE PARA EL BOTÓN GLOBAL (Evita parpadeos)
             if (mainContenedor) {
                 mainContenedor.setAttribute("data-vista-activa", pestañaSeleccionada);
             }
 
-            // 2. Limpieza total de los contenedores para recibir la nueva data
+            // 3. Limpieza total de los contenedores para recibir la nueva data
             const contenedorPrincipal = document.getElementById("contenedor-partidos"); 
             if (contenedorPrincipal) contenedorPrincipal.innerHTML = "";
             
@@ -786,7 +805,7 @@ function configurarPestañas() {
             if (contGrupos) contGrupos.innerHTML = "";
             if (contPartidosInicio) contPartidosInicio.innerHTML = "";
 
-            // 3. Lógica de carga de datos
+            // 4. Lógica de carga de datos
             pestañaActiva = pestañaSeleccionada;
             if (pestañaActiva === "inicio") {
                 cargarDashboardInicio();
