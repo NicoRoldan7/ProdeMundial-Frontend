@@ -884,3 +884,35 @@ header {
         z-index: 999999999 !important;
     }
 }
+
+#vista-inicio {
+    display: flex;
+    flex-direction: column;
+    gap: 40px; /* Separación clara entre grupos y partidos */
+}
+
+.titulo-seccion {
+    color: var(--dorado);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.lista-partidos {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 600px; /* Que los partidos no se estiren demasiado */
+    margin: 0 auto;
+}
+
+/* 1. Por defecto, si el contenedor está mostrando el 'inicio', ocultamos el botón global sin vueltas */
+main.contenedor[data-vista-activa="inicio"] #btn-guardar-prediccion-global,
+main.contenedor[data-vista-activa="inicio"] .contenedor-boton-global {
+    display: none !important;
+}
+
+/* 2. Opcional: Si en la pestaña de Posiciones Generales ('general') tampoco querés el botón, lo sumás acá: */
+main.contenedor[data-vista-activa="general"] #btn-guardar-prediccion-global,
+main.contenedor[data-vista-activa="general"] .contenedor-boton-global {
+    display: none !important;
+}

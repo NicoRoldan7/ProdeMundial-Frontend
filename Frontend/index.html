@@ -9,6 +9,7 @@
 <body>
 
     <div id="pantalla-login">
+        
         <section class="tarjeta-login">
             <div class="icono-copa">🏆</div>
             
@@ -153,7 +154,7 @@
                 </div>
             </div>
         </header>
-
+        
         <main class="contenedor">
             <section class="seccion-lista">
                 <h2>⚽ FIXTURE Y PRONÓSTICOS</h2>
@@ -161,12 +162,25 @@
                     <p class="cargando">Seleccioná tu usuario arriba para ver el fixture...</p>
                 </div>
 
-                <div class="contenedor-boton-global">
+            <div class="contenedor-boton-global">
                     <button id="btn-guardar-prediccion-global" class="btn-guardar-global">
                         GUARDAR PREDICCIÓN 💾
                     </button>
-                </div>
+                </div>  
             </section>
+
+            <section id="vista-inicio" class="seccion-tab activa">
+    <section id="contenedor-grupos" class="grid-grupos"></section>
+    <section id="contenedor-partidos-inicio">
+        <div id="lista-partidos-en-vivo" class="lista-partidos"></div>
+    </section>
+</section>
+
+<section id="vista-fecha1" class="seccion-tab" style="display: none;">
+    <div id="contenedor-partidos"></div>
+</section>
+
+            </main>
         </main>
     </div>
 
@@ -200,6 +214,7 @@
         <p>Creando tu cuenta, por favor espera...</p>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="app.js"></script>
 </body>
 </html>

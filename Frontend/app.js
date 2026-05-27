@@ -6,6 +6,13 @@ const CREDENCIALES_VALIDAS = {
     clave: "prode2026"
 };
 
+
+// Desestructuramos para evitar el error de "is not a function"
+const { createClient } = supabase;
+
+// Inicializamos el cliente con el nombre 'db' para que no pise nada
+const db = createClient('https://qtabvayxldwetjxgrqqm.supabase.co', 'sb_publishable_zF0BeJbOjnfVB3zUMytneQ_oZK04Il9');
+
 // 🌟 VARIABLE GLOBAL: Guarda qué pestaña está mirando el usuario
 let pestañaActiva = "inicio"; 
 
@@ -306,7 +313,6 @@ if (btnFechas && dropdownFechas) {
         dropdownFechas.style.display = "none";
     });
 }
-    // =========================================================================
 
     // =========================================================================
     // 📥 BOTÓN GLOBAL DE GUARDAR PREDICCIÓN
@@ -528,8 +534,10 @@ function cerrarSesion() {
 
 // 2. DIBUJAR EL FIXTURE FILTRADO POR PESTAÑAS
 async function cargarTableroPartidos() {
+    if (pestañaActiva === "inicio") return;
     const contenedor = document.getElementById("contenedor-partidos");
     const btnGlobalContainer = document.querySelector(".contenedor-boton-global");
+    if (!contenedor) return; // Seguridad extra
     const usuarioGuardado = localStorage.getItem("usuarioProde");
     if (!usuarioGuardado) return;
     
@@ -547,14 +555,12 @@ async function cargarTableroPartidos() {
         return;
     }
 
-    if (pestañaActiva === "inicio") {
-        contenedor.innerHTML = `
-            <div class="tarjeta-formulario" style="text-align: center; color: white; padding: 2rem;">
-                <h2>⚽ ¡Bienvenido al Prode Mundial 2026!</h2>
-                <p>Seleccioná cualquiera de las fechas arriba en la barra para empezar a tirar tus pronósticos.</p>
-            </div>`;
-        return;
-    }
+// En tu función de cambio de pestaña:
+if (pestañaActiva === "inicio") {
+    // 1. Limpiamos el contenedor (opcional pero recomendado)
+    const contenedor = document.getElementById("vista-inicio");
+    contenedor.innerHTML = ""; 
+}
 
     try {
         const [resPartidos, resEquipos] = await Promise.all([
@@ -751,40 +757,153 @@ function verificarSesionExistente() {
     }
 }
 
-// 5. ESCUCHADOR DE CLICS EN LAS PESTAÑAS
 function configurarPestañas() {
     const botonesPestañas = document.querySelectorAll(".tab-btn");
-    const textoFechaActiva = document.getElementById("texto-fecha-activa");
-    const dropdownFechas = document.getElementById("dropdown-fechas-contenido");
-
-    console.log(`🔎 Buscando pestañas... Se encontraron: ${botonesPestañas.length} botones.`);
-
-    if (botonesPestañas.length === 0) return;
+    // Buscamos el contenedor principal de las secciones
+    const mainContenedor = document.querySelector("main.contenedor");
 
     botonesPestañas.forEach(boton => {
         boton.addEventListener("click", (e) => {
             e.preventDefault();
-
             const pestañaSeleccionada = boton.getAttribute("data-tab");
-            if (!pestañaSeleccionada) return;
+            
+            // 1. Limpieza visual de botones superiores
+            botonesPestañas.forEach(b => b.classList.remove("active"));
+            boton.classList.add("active");
 
-            pestañaActiva = pestañaSeleccionada;
-
-            botonesPestañas.forEach(b => {
-                if (b.getAttribute("data-tab") === pestañaSeleccionada) {
-                    b.classList.add("active");
-                } else {
-                    b.classList.remove("active");
-                }
-            });
-
-            if (textoFechaActiva && dropdownFechas) {
-                textoFechaActiva.innerText = boton.innerText; 
-                dropdownFechas.classList.remove("mostrar-fechas"); 
+            // 🌟 TRUCO CLAVE: Guardamos la pestaña actual en el HTML al instante del clic.
+            // Esto evita cualquier tipo de parpadeo visual porque el CSS reacciona en 0 milisegundos.
+            if (mainContenedor) {
+                mainContenedor.setAttribute("data-vista-activa", pestañaSeleccionada);
             }
 
-            cargarTableroPartidos();
+            // 2. Limpieza total de los contenedores para recibir la nueva data
+            const contenedorPrincipal = document.getElementById("contenedor-partidos"); 
+            if (contenedorPrincipal) contenedorPrincipal.innerHTML = "";
+            
+            const contGrupos = document.getElementById("contenedor-grupos");
+            const contPartidosInicio = document.getElementById("lista-partidos-en-vivo");
+            if (contGrupos) contGrupos.innerHTML = "";
+            if (contPartidosInicio) contPartidosInicio.innerHTML = "";
+
+            // 3. Lógica de carga de datos
+            pestañaActiva = pestañaSeleccionada;
+            if (pestañaActiva === "inicio") {
+                cargarDashboardInicio();
+            } else {
+                cargarTableroPartidos();
+            }
         });
     });
+}
+
+// Función para cargar los datos del dashboard
+async function cargarDashboardInicio() {
+    document.body.classList.add("vista-inicio");
+    // 1. Ocultar el botón apenas entramos a Inicio (así no dependemos de dónde venía el usuario)
+    const botonGuardar = document.getElementById("btn-guardar-prediccion");
+    if (botonGuardar) {
+        botonGuardar.style.display = "none";
+    }
+    const contenedorGrupos = document.getElementById("contenedor-grupos");
+    
+    // Ocultamos el botón de guardar predicción en la pestaña Inicio
+    if (!contenedorGrupos) {
+        console.warn("No se encontró el contenedor-grupos en el DOM.");
+        return;
+    }
+
+    contenedorGrupos.innerHTML = "<p>Cargando Grupos del Mundial...</p>";
+
+    try {
+        // 1. Traemos todos los equipos de una sola vez
+        const { data: equipos, error } = await db.from('Equipos').select('*');
+
+        if (error) throw error;
+
+        // 2. Definimos las letras de los 12 grupos (Del Grupo A al L)
+        const letrasGrupos = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+        
+        // 3. Acá vamos a ir acumulando el HTML de todos los grupos
+        //  AHORA DEJALO ASÍ:
+let htmlDeTodosLosGrupos = `
+    <div style="width: 100%; text-align: center; margin-bottom: 25px;">
+        <h2 style="color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.6); font-size: 24px;">⚽ Grupos y Resultados en Vivo</h2>
+    </div>
+    
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%;">
+`;
+        // 4. Recorremos letra por letra
+        letrasGrupos.forEach(letra => {
+            // Filtramos los equipos de la letra actual
+            const equiposDelGrupo = equipos.filter(equipo => equipo.grupo === letra);
+
+            // Si el grupo tiene equipos cargados, armamos su tarjetita
+            if (equiposDelGrupo.length > 0) {
+                htmlDeTodosLosGrupos += `
+                    <div class="tarjeta-grupo" style="border: 1px solid #ccc; padding: 15px; border-radius: 8px; width: 260px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <h3 style="margin-top: 0; color: #333; border-bottom: 2px solid #e67e22; padding-bottom: 5px; text-align: center;">Grupo ${letra}</h3>
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                `;
+
+                // Metemos los 4 equipos de este grupo en particular
+                equiposDelGrupo.forEach(equipo => {
+                    htmlDeTodosLosGrupos += `
+                        <li style="display: flex; align-items: center; margin-bottom: 10px;">
+                            <img src="${equipo.logo_url || 'https://via.placeholder.com/30'}" alt="${equipo.nombre}" style="width: 30px; height: 30px; margin-right: 10px; object-fit: contain;">
+                            <span style="font-weight: 500; color: #333;">${equipo.nombre}</span>
+                        </li>
+                    `;
+                });
+
+                htmlDeTodosLosGrupos += `
+                        </ul>
+                    </div>
+                `;
+            }
+        });
+
+        htmlDeTodosLosGrupos += `</div>`;
+
+        // 5. Metemos todo el bloque gigante de grupos en la pantalla
+        contenedorGrupos.innerHTML = htmlDeTodosLosGrupos;
+
+    } catch (e) {
+        console.error("Error detallado al cargar Inicio:", e);
+        contenedorGrupos.innerHTML = `<p style="color:red;">Error al cargar datos: ${e.message}</p>`;
+    }
+}
+
+function cargarFecha(numeroFecha) {
+    const contenedor = document.getElementById("vista-fecha");
+    
+    // Aquí sí inyectas el botón, porque en las fechas sí quieres guardar
+    contenedor.innerHTML = `
+        <h2>Resultados Fecha ${numeroFecha}</h2>
+        <div id="lista-partidos">...</div>
+        
+        <div class="contenedor-boton-global">
+            <button id="btn-guardar" class="btn-guardar-global">
+                GUARDAR PREDICCIÓN 💾
+            </button>
+        </div>
+    `;
+    
+    // Aquí asocias el evento al botón
+    document.getElementById("btn-guardar").addEventListener("click", guardarResultados);
+}
+
+// Función inteligente para mostrar el botón de guardar
+function mostrarBotonGuardar() {
+    // Si el usuario se movió a Inicio, bloqueamos el botón por completo
+    if (pestañaActiva === "inicio") {
+        const btn = document.getElementById("btn-guardar-prediccion");
+        if (btn) btn.style.display = "none";
+        return;
+    }
+    
+    // Si está en cualquier otra pestaña, sí lo mostramos
+    const btn = document.getElementById("btn-guardar-prediccion");
+    if (btn) btn.style.display = "block";
 }
 
