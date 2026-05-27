@@ -917,3 +917,7 @@ main.contenedor[data-vista-activa="general"] .contenedor-boton-global {
     display: none !important;
 }
 
+/* Si estamos en Inicio, ocultamos el título de Fixture y Pronósticos de una */
+main.contenedor[data-vista-activa="inicio"] .seccion-lista h2 {
+    display: none !important;
+}
