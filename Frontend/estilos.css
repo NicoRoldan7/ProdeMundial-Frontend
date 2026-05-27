@@ -921,3 +921,28 @@ main.contenedor[data-vista-activa="general"] .contenedor-boton-global {
 main.contenedor[data-vista-activa="inicio"] .seccion-lista h2 {
     display: none !important;
 }
+
+/* Media query exclusivo para pantallas chicas (Celulares) */
+@media (max-width: 480px) {
+    .grid-grupos {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+    }
+    .grid-grupos > div {
+        width: calc(50% - 4px) !important; /* Cada tarjeta ocupa exactamente la mitad de la pantalla */
+    }
+    .grid-grupos .tarjeta-grupo { /* Usá la clase que tengan tus tarjetas de grupo */
+        padding: 8px !important;
+        font-size: 0.75rem !important; /* Letra un cachito más chica para que no se corte nada */
+    }
+
+    /* Opcional: si los nombres de los países son muy largos, esto evita que se deforme el cuadro */
+    .grid-grupos p, 
+    .grid-grupos span {
+        font-size: 0.75rem !important;
+        white-space: nowrap; /* Evita que el texto salte de línea feo */
+        overflow: hidden;
+        text-overflow: ellipsis; /* Si no entra el nombre completo, le mete ... al final */
+    }
+}
