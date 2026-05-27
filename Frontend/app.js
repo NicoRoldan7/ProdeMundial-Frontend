@@ -871,7 +871,7 @@ async function cargarDashboardInicio() {
         //  AHORA DEJALO ASÍ:
 let htmlDeTodosLosGrupos = `
     <div style="width: 100%; text-align: center; margin-bottom: 25px;">
-        <h2 style="color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.6); font-size: 24px;">⚽ Grupos y Resultados en Vivo</h2>
+        <h2 style="color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.6); font-size: 24px;"></h2>
     </div>
     
     <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%;">
@@ -881,29 +881,41 @@ let htmlDeTodosLosGrupos = `
             // Filtramos los equipos de la letra actual
             const equiposDelGrupo = equipos.filter(equipo => equipo.grupo === letra);
 
-            // Si el grupo tiene equipos cargados, armamos su tarjetita
-            if (equiposDelGrupo.length > 0) {
-                htmlDeTodosLosGrupos += `
-                    <div class="tarjeta-grupo" style="border: 1px solid #ccc; padding: 15px; border-radius: 8px; width: 260px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                        <h3 style="margin-top: 0; color: #333; border-bottom: 2px solid #e67e22; padding-bottom: 5px; text-align: center;">Grupo ${letra}</h3>
-                        <ul style="list-style: none; padding: 0; margin: 0;">
-                `;
+           // Si el grupo tiene equipos cargados, armamos su tarjetita
+if (equiposDelGrupo.length > 0) {
+    // 1. Si es el PRIMER grupo (el Grupo A), metemos el título y ABRIMOS el contenedor del grid
+    if (letra === 'A') {
+        htmlDeTodosLosGrupos += `
+            <h2 class="titulo-seccion-vivo" style="width: 100%; text-align: center; margin: 15px 0; color: #fff; font-size: 1.4rem;">
+                ⚽ Grupos y Resultados en Vivo
+            </h2>
+            <div class="contenedor-grid-bloque"> 
+        `;
+    }
 
-                // Metemos los 4 equipos de este grupo en particular
-                equiposDelGrupo.forEach(equipo => {
-                    htmlDeTodosLosGrupos += `
-                        <li style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <img src="${equipo.logo_url || 'https://via.placeholder.com/30'}" alt="${equipo.nombre}" style="width: 30px; height: 30px; margin-right: 10px; object-fit: contain;">
-                            <span style="font-weight: 500; color: #333;">${equipo.nombre}</span>
-                        </li>
-                    `;
-                });
+    // 2. Renderizamos la tarjeta del grupo común y corriente
+    htmlDeTodosLosGrupos += `
+        <div class="tarjeta-grupo">
+            <h3 class="titulo-grupo">Grupo ${letra}</h3>
+            <ul class="lista-equipos">
+    `;
 
-                htmlDeTodosLosGrupos += `
-                        </ul>
-                    </div>
-                `;
-            }
+    // Metemos los 4 equipos
+    equiposDelGrupo.forEach(equipo => {
+        htmlDeTodosLosGrupos += `
+            <li class="fila-pais">
+                <img src="${equipo.logo_url || 'https://via.placeholder.com/30'}" alt="${equipo.nombre}" class="bandera-equipo">
+                <span class="nombre-equipo">${equipo.nombre}</span>
+            </li>
+        `;
+    });
+    
+    // Acordate de cerrar las etiquetas abajo de tu foreach si no lo tenías separado:
+    htmlDeTodosLosGrupos += `
+            </ul>
+        </div>
+    `;
+}
         });
 
         htmlDeTodosLosGrupos += `</div>`;

@@ -562,14 +562,16 @@ select {
         position: relative;
         z-index: 100 !important;
         padding: 1rem;
+        overflow: visible !important; /* Asegura que el header no limite el desborde */
     }
+    
     .dropdown-perfil-contenido.show {
         display: block !important;
-        position: fixed !important; /* Sacamos el menú del flujo del header */
-        top: 60px !important;       /* Ajusta este valor si queda muy arriba o abajo */
+        position: fixed !important; 
+        top: 60px !important;      
         right: 10px !important;
-        left: 10px !important;      /* Se centra un poco mejor en pantallas chicas */
-        z-index: 9999999 !important; /* Prioridad máxima absoluta */
+        left: 10px !important;      
+        z-index: 9999999 !important; 
         width: auto !important;
     }
     
@@ -598,7 +600,7 @@ select {
         padding: 1rem 1rem;
     }
 
-    /* Forzamos a las tarjetas a quedarse en una capa baja exclusiva en Mobile */
+    /* Partidos de las Fechas */
     .tarjeta-formulario {
         padding: 0.8rem 0.6rem !important;
         gap: 0.3rem !important;
@@ -639,59 +641,125 @@ select {
         display: none !important;
     }
 
-/* ==========================================================================
-   🚀 FIX DEFINITIVO PARA EL DESPLEGABLE MOBILE
-   ========================================================================== */
+ /* ==========================================================================
+       ⚽ NUEVO: FIX PARA LOS GRUPOS EN INICIO (2 POR COLUMNA) - SOLUCIÓN JS
+       ========================================================================== */
+    
+    /* El contenedor principal de la pestaña de inicio se comporta normal en vertical */
+    main.contenedor[data-vista-activa="inicio"],
+    #contenedor-grupos {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: flex-start !important; /* Fuerza a tirar todo hacia arriba */
+        width: 100% !important;
+        padding: 10px 6px 10px 6px !important; /* 🔥 Bajamos drásticamente el espacio superior */
+        margin: 0 auto !important;
+        box-sizing: border-box !important;
+    }
 
-/* Aseguramos que el botón no sea bloqueado por nada */
-.contenedor-desplegable-fechas {
-    display: flex !important;
-    justify-content: center !important; 
-    align-items: center !important;
-    width: 100% !important;
-    margin: 1rem auto 0 auto !important;
-    position: relative !important;      
-    z-index: 999999 !important; 
-}
+    /* El título exclusivo que pusimos en el JS se centra de lado a lado */
+    .titulo-seccion-vivo {
+        width: 100% !important;
+        text-align: center !important;
+        margin: -40px 0 0px 0 !important; /* 🔥 Solo 5px de espacio hacia el header */
+        font-size: 1.3rem !important;
+    }
 
-.btn-fechas-menu {
-    background: #04170e;
-    color: #ffffff;
-    border: 2px solid var(--dorado); 
-    padding: 0.65rem 1.2rem;
-    font-size: 1rem;
-    font-weight: 700;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 220px;          
-    gap: 10px;
-    z-index: 1000000 !important;
-}
+    /* 🔥 EL NUEVO SUB-CONTENEDOR: Este maneja las dos columnas de forma perfecta */
+    .contenedor-grid-bloque {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important; /* DOS POR FILA */
+        gap: 8px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
 
-/* AQUÍ ESTÁ EL CAMBIO: 'fixed' para despegarlo del header y que no se corte */
-#dropdown-fechas-contenido {
-    display: none; /* ESTO ES LO QUE LO OCULTA AL ENTRAR */
-    position: absolute;
-    right: 0;
-    top: 110%;
-    width: 150px;
-    background-color: #0b3924 !important; 
-    border: 2px solid var(--dorado) !important;
-    border-radius: 8px;
-    z-index: 5000;
-}
+    /* Las tarjetas se adaptan solas a su celda */
+    .tarjeta-grupo {
+        width: 100% !important; 
+        min-width: 0 !important; /* Clave mágica para dejarse encoger */
+        max-width: 100% !important;
+        padding: 8px 6px !important; 
+        margin: 0 !important;
+        background: #fff !important;
+        box-sizing: border-box !important;
+    }
 
-#dropdown-fechas-contenido.mostrar-fechas { 
-    display: block !important; 
-}
+    /* Ajustes de letra para que no se rompan las filas */
+    .tarjeta-grupo .titulo-grupo {
+        font-size: 0.85rem !important;
+        margin-bottom: 6px !important;
+    }
 
-/* Aseguramos que el header no limite el desborde */
-header {
-    overflow: visible !important;
-}
+    .tarjeta-grupo .fila-pais {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 4px !important;
+        margin-bottom: 5px !important;
+    }
+
+    .tarjeta-grupo .bandera-equipo {
+        width: 16px !important;
+        height: 16px !important;
+        margin-right: 4px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .tarjeta-grupo .nombre-equipo {
+        font-size: 0.68rem !important;
+        white-space: nowrap !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* ==========================================================================
+       🚀 FIX DEFINITIVO PARA EL DESPLEGABLE MOBILE (Sigue adentro del Media)
+       ========================================================================== */
+    .contenedor-desplegable-fechas {
+        display: flex !important;
+        justify-content: center !important; 
+        align-items: center !important;
+        width: 100% !important;
+        margin: 1rem auto 0 auto !important;
+        position: relative !important;      
+        z-index: 999999 !important; 
+    }
+
+    .btn-fechas-menu {
+        background: #04170e;
+        color: #ffffff;
+        border: 2px solid var(--dorado); 
+        padding: 0.65rem 1.2rem;
+        font-size: 1rem;
+        font-weight: 700;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 220px;          
+        gap: 10px;
+        z-index: 1000000 !important;
+    }
+
+    #dropdown-fechas-contenido {
+        display: none; 
+        position: absolute;
+        right: 0;
+        top: 110%;
+        width: 150px;
+        background-color: #0b3924 !important; 
+        border: 2px solid var(--dorado) !important;
+        border-radius: 8px;
+        z-index: 5000;
+    }
+
+    #dropdown-fechas-contenido.mostrar-fechas { 
+        display: block !important; 
+    }
 
     #dropdown-fechas-contenido .tab-btn {
         background: transparent !important;
@@ -719,7 +787,7 @@ header {
         transform: none !important;
     }
     
-}
+} /* <-- ESTE CIERRA EL MEDIA QUERY DE VERDAD ABAJO DE TODO */
 
 @media (max-width: 400px) {
     .nombre-equipo {
@@ -922,27 +990,144 @@ main.contenedor[data-vista-activa="inicio"] .seccion-lista h2 {
     display: none !important;
 }
 
-/* Media query exclusivo para pantallas chicas (Celulares) */
-@media (max-width: 480px) {
-    .grid-grupos {
-        display: flex !important;
-        flex-wrap: wrap !important;
-        gap: 8px !important;
-    }
-    .grid-grupos > div {
-        width: calc(50% - 4px) !important; /* Cada tarjeta ocupa exactamente la mitad de la pantalla */
-    }
-    .grid-grupos .tarjeta-grupo { /* Usá la clase que tengan tus tarjetas de grupo */
-        padding: 8px !important;
-        font-size: 0.75rem !important; /* Letra un cachito más chica para que no se corte nada */
+/* ==========================================
+   ESTILOS GENERALES (Para Computadora / Escritorio)
+   ========================================== */
+.grid-grupos, 
+#contenedor-grupos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* La tarjeta con las medidas originales que tenías en el JS */
+.tarjeta-grupo {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 8px;
+    width: 260px; /* Ancho original en PC */
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+}
+
+.tarjeta-grupo .titulo-grupo {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 2px solid #e67e22;
+    padding-bottom: 5px;
+    text-align: center;
+    font-size: 1.15rem;
+}
+
+.tarjeta-grupo .lista-equipos {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tarjeta-grupo .fila-pais {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.tarjeta-grupo .bandera-equipo {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+    object-fit: contain;
+}
+
+.tarjeta-grupo .nombre-equipo {
+    font-weight: 500;
+    color: #333;
+}
+
+
+/* ==========================================
+   📱 CONFIGURACIÓN PARA CELULARES (Hasta 768px)
+   ========================================== */
+@media (max-width: 768px) {
+    
+    /* 1. Apuntamos únicamente al div que tiene adentro las tarjetas de los grupos */
+    .grid-grupos,
+    #contenedor-grupos {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important; /* 🔥 DOS COLUMNAS REALES */
+        gap: 8px !important; /* Espacio controlado entre tarjetas */
+        padding: 4px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 
-    /* Opcional: si los nombres de los países son muy largos, esto evita que se deforme el cuadro */
-    .grid-grupos p, 
-    .grid-grupos span {
-        font-size: 0.75rem !important;
-        white-space: nowrap; /* Evita que el texto salte de línea feo */
+    /* 2. El título se queda afuera del grid, ocupando todo el ancho arriba */
+    main.contenedor[data-vista-activa="inicio"] h2,
+    main.contenedor[data-vista-activa="inicio"] .seccion-tab h2 {
+        grid-column: span 2 !important; /* Si se mete en el grid, le decimos que ocupe las 2 columnas */
+        width: 100% !important;
+        text-align: center !important; /* Centradito para que quede facha */
+        margin-bottom: 12px !important;
+    }
+
+    /* 3. Ajustamos las tarjetas para que no se estiren */
+    .tarjeta-grupo {
+        width: 100% !important;
+        min-width: 0 !important; /* Clave absoluta para que se achiquen */
+        max-width: 100% !important;
+        padding: 8px 6px !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 4. Textos y fuentes bien compactos */
+    .tarjeta-grupo .titulo-grupo {
+        font-size: 0.85rem !important;
+        margin-bottom: 6px !important;
+    }
+
+    .tarjeta-grupo .fila-pais {
+        margin-bottom: 5px !important;
+        gap: 4px !important;
+    }
+
+    .tarjeta-grupo .bandera-equipo {
+        width: 16px !important;
+        height: 16px !important;
+        margin-right: 4px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .tarjeta-grupo .nombre-equipo {
+        font-size: 0.68rem !important;
+        white-space: nowrap !important;
         overflow: hidden;
-        text-overflow: ellipsis; /* Si no entra el nombre completo, le mete ... al final */
+        text-overflow: ellipsis;
+    }
+    /* 🔥 EL SUB-CONTENEDOR DEL GRID: Lo obligamos a centrarse en la pantalla */
+    .contenedor-grid-bloque {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important; /* Dos por fila */
+        gap: 8px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 4px !important; /* Un mínimo de aire a los costados */
+        margin: 0 auto !important; /* Clave: Centra el bloque entero */
+        justify-content: center !important; /* Centra las columnas internamente */
+        align-content: center !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Por si el contenedor viejo inyecta un alineado raro desde el JS o HTML */
+    #contenedor-grupos {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important; /* Alinea título y grid al centro justo */
+        justify-content: center !important;
+        width: 100% !important;
+        margin: 0 auto !important;
     }
 }
