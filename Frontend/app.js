@@ -337,18 +337,28 @@ function configurarLogin() {
         
         const userInput = document.getElementById("login-user").value.trim();
         const passInput = document.getElementById("login-pass").value.trim();
+        const mainContenedor = document.querySelector("main.contenedor");
 
+        // 🟢 CASO 1: LOGIN DE ADMIN FIXED
         if (userInput === CREDENCIALES_VALIDAS.usuario && passInput === CREDENCIALES_VALIDAS.clave) {
             const adminSession = { id: "00000000-0000-0000-0000-000000000000", nombre: userInput };
             localStorage.setItem("usuarioProde", JSON.stringify(adminSession));
             document.getElementById("nombre-usuario-header").innerText = userInput;
+            
+            // Cambios de pantallas
             document.getElementById("pantalla-login").style.display = "none";
             document.getElementById("pantalla-juego").style.display = "block";
-            cargarTableroPartidos();
+            
+            // 🌟 Forzamos que la vista activa inicial sea Inicio
+            if (mainContenedor) mainContenedor.setAttribute("data-vista-activa", "inicio");
+            pestañaActiva = "inicio";
+            
+            // Cargamos los grupos hermosos que armamos
+            cargarDashboardInicio();
             return;
         }
 
-        // feedback visual en el login tradicional
+        // Feedback visual en el login tradicional
         const btnLogin = e.target.querySelector("button[type='submit']");
         if (btnLogin) {
             btnLogin.disabled = true;
@@ -365,13 +375,22 @@ function configurarLogin() {
                 })
             });
 
+            // 🟢 CASO 2: LOGIN USUARIO REGULAR FIXED
             if (res.ok) {
                 const usuarioLogueado = await res.json(); 
                 localStorage.setItem("usuarioProde", JSON.stringify(usuarioLogueado));
                 document.getElementById("nombre-usuario-header").innerText = usuarioLogueado.nombre;
+                
+                // Cambios de pantallas
                 document.getElementById("pantalla-login").style.display = "none";
                 document.getElementById("pantalla-juego").style.display = "block";
-                cargarTableroPartidos();
+                
+                // 🌟 Forzamos que la vista activa inicial sea Inicio
+                if (mainContenedor) mainContenedor.setAttribute("data-vista-activa", "inicio");
+                pestañaActiva = "inicio";
+                
+                // Cargamos los grupos hermosos que armamos
+                cargarDashboardInicio();
             } else {
                 const errText = await res.text();
                 alert("❌ Error de ingreso: " + errText);
@@ -761,7 +780,7 @@ function configurarPestañas() {
     const botonesPestañas = document.querySelectorAll(".tab-btn");
     const mainContenedor = document.querySelector("main.contenedor");
     
-    // 📱 Traemos los elementos del menú del celular
+    // Elementos del celu
     const textoFechaActiva = document.getElementById("texto-fecha-activa");
     const dropdownFechas = document.getElementById("dropdown-fechas-contenido");
 
@@ -770,33 +789,26 @@ function configurarPestañas() {
             e.preventDefault();
             const pestañaSeleccionada = boton.getAttribute("data-tab");
             
-            // 1. Limpieza visual de botones superiores (Saca el 'active' de todos y se lo pone al que tocaste)
+            // 1. Limpieza de botones activos
             botonesPestañas.forEach(b => b.classList.remove("active"));
-            
-            // Buscamos todos los botones que apunten a la misma pestaña (celu y compu) y los activamos
             document.querySelectorAll(`.tab-btn[data-tab="${pestañaSeleccionada}"]`).forEach(b => {
                 b.classList.add("active");
             });
 
-            // 🌟 1.5 CONTROL PARA CELULARES
-            // Si existe el texto del celular, le cambiamos el nombre por el del botón que tocó
+            // Control celular
             if (textoFechaActiva) {
                 textoFechaActiva.innerText = boton.innerText.replace("▼", "").trim();
             }
-            
-            // Cerramos el desplegable del celular automáticamente después de hacer clic
             if (dropdownFechas) {
-                dropdownFechas.classList.remove("mostrar"); // o style.display = "none" según cómo manejes tu menú de celu
-                // Si manejás el menú del celular con inline styles, podés probar descomentar la línea de abajo:
-                // dropdownFechas.style.display = "none";
+                dropdownFechas.classList.remove("mostrar");
             }
 
-            // 2. TRUCO CLAVE PARA EL BOTÓN GLOBAL (Evita parpadeos)
+            // Evita parpadeos
             if (mainContenedor) {
                 mainContenedor.setAttribute("data-vista-activa", pestañaSeleccionada);
             }
 
-            // 3. Limpieza total de los contenedores para recibir la nueva data
+            // Limpieza de contenedores
             const contenedorPrincipal = document.getElementById("contenedor-partidos"); 
             if (contenedorPrincipal) contenedorPrincipal.innerHTML = "";
             
@@ -805,7 +817,7 @@ function configurarPestañas() {
             if (contGrupos) contGrupos.innerHTML = "";
             if (contPartidosInicio) contPartidosInicio.innerHTML = "";
 
-            // 4. Lógica de carga de datos
+            // Lógica de carga
             pestañaActiva = pestañaSeleccionada;
             if (pestañaActiva === "inicio") {
                 cargarDashboardInicio();
@@ -814,7 +826,19 @@ function configurarPestañas() {
             }
         });
     });
-}
+
+    // 🌟 EL TRUCO SEGURO VA ACÁ (Justo antes de terminar la función madre):
+    const logoInicio = document.getElementById("btn-logo-inicio");
+    if (logoInicio) {
+        logoInicio.addEventListener("click", () => {
+            // Buscamos el botón de inicio de la compu y le hacemos clic virtual
+            const botonTabInicio = document.querySelector('.tab-btn[data-tab="inicio"]');
+            if (botonTabInicio) {
+                botonTabInicio.click();
+            }
+        });
+    }
+} // <-- Este es el cierre de la función configurarPestañas
 
 // Función para cargar los datos del dashboard
 async function cargarDashboardInicio() {
@@ -924,5 +948,20 @@ function mostrarBotonGuardar() {
     // Si está en cualquier otra pestaña, sí lo mostramos
     const btn = document.getElementById("btn-guardar-prediccion");
     if (btn) btn.style.display = "block";
+}
+
+// Buscamos el título-logo que acabamos de marcar
+const logoInicio = document.getElementById("btn-logo-inicio");
+
+if (logoInicio) {
+    logoInicio.addEventListener("click", () => {
+        // 1. Buscamos el botón de la pestaña de "Inicio" (tanto de compu como de celu) 
+        // y simulamos un clic real sobre él para que se ejecute toda tu lógica automática
+        const botonTabInicio = document.querySelector('.tab-btn[data-tab="inicio"]');
+        
+        if (botonTabInicio) {
+            botonTabInicio.click(); // 💥 ¡Magia! Esto dispara el evento click que ya programamos antes
+        }
+    });
 }
 
