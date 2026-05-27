@@ -81,9 +81,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
     // =========================================================================
-
     
-
     // Inicializar accesos y navegación de pantallas
     configurarLogin();
     configurarNavegacionLogin(); 
@@ -96,15 +94,60 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (btnGoogleLogin) btnGoogleLogin.addEventListener("click", iniciarSesionConGoogle);
     if (btnGoogleRegister) btnGoogleRegister.addEventListener("click", iniciarSesionConGoogle);
     
-    // 🌟 Evento para abrir/cerrar el menú de perfil (NO SE TOCA, QUEDA INDEPENDIENTE)
-    const btnPerfil = document.getElementById("btn-perfil");
-    if (btnPerfil) {
-        btnPerfil.addEventListener("click", (e) => {
-            e.stopPropagation();
-            const dropdown = document.getElementById("dropdown-perfil");
-            if (dropdown) dropdown.classList.toggle("show");
-        });
+// 🌟 Evento para abrir/cerrar el menú de perfil
+// 1. Seleccionamos los elementos
+const btnPerfil = document.getElementById("btn-perfil");
+const dropdown = document.getElementById("dropdown-perfil");
+
+// 2. Lógica de toggle directo
+if (btnPerfil && dropdown) {
+    btnPerfil.addEventListener("click", (e) => {
+        e.stopPropagation(); // Evitamos que el clic se propague y cierre el menú
+
+        // Si ya está abierto, lo cerramos
+        if (dropdown.classList.contains("show")) {
+            dropdown.classList.remove("show");
+            dropdown.style.display = "none";
+        } else {
+            // Si está cerrado, hacemos el "teletransporte" y lo abrimos
+            document.body.appendChild(dropdown);
+            
+            const rect = btnPerfil.getBoundingClientRect();
+            dropdown.style.position = "fixed";
+            dropdown.style.zIndex = "999999999";
+            dropdown.style.display = "block";
+            
+            // Posicionamiento
+            dropdown.style.top = (rect.bottom + 5) + "px";
+            dropdown.style.right = "205px";
+            dropdown.style.width = window.innerWidth <= 650 ? "calc(100% - 20px)" : "200px";
+            
+            dropdown.classList.add("show");
+        }
+    });
+}
+
+// 3. Cierre global (mejorado para no interferir)
+window.addEventListener("click", (e) => {
+    // Si el clic no fue dentro del menú, lo cerramos
+    if (dropdown && !dropdown.contains(e.target) && !btnPerfil.contains(e.target)) {
+        dropdown.classList.remove("show");
+        dropdown.style.display = "none";
     }
+});
+
+// Cierre global
+window.addEventListener("click", () => {
+    if (dropdown) {
+        dropdown.classList.remove("show");
+        dropdown.style.display = "none";
+    }
+});
+
+// 🌟 Evento para cerrar al hacer clic afuera
+window.addEventListener("click", () => {
+    if (dropdown) dropdown.classList.remove("show");
+});
 
     // Cerrar el menú de perfil si el usuario hace clic afuera
     window.addEventListener("click", () => {
@@ -744,3 +787,4 @@ function configurarPestañas() {
         });
     });
 }
+

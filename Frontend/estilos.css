@@ -45,7 +45,8 @@ header {
     position: relative;
     top: 0;
     width: 100%;
-    z-index: 100;
+    z-index: 1000;
+    overflow: visible !important;
     background: linear-gradient(180deg, rgba(9, 49, 31, 0.2) 0%, rgba(6, 36, 23, 0.2) 100%);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px); /* Para asegurar compatibilidad en Safari/iOS */
@@ -495,6 +496,7 @@ select {
 /* 👤 DESPLEGABLE DE PERFIL DE USUARIO */
 .menu-perfil-contenedor {
     position: relative;
+    z-index: 10000;
 }
 
 .btn-perfil-trigger {
@@ -516,23 +518,25 @@ select {
     background: #165b3b;
     box-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
 }
-
-.dropdown-perfil-contenido {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 110%;
-    background: #0b3924;
-    min-width: 160px;
-    border: 1px solid var(--dorado);
-    border-radius: 6px;
-    z-index: 1000;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    animation: desplegarSuave 0.2s ease-out;
+/* Asegura que el contenedor tenga posición relativa */
+/* Aseguramos que el contenedor padre mantenga la posición */
+.menu-perfil-contenedor {
+    position: relative !important;
 }
 
-.dropdown-perfil-contenido.show { display: block; }
+/* El menú debe estar oculto por defecto */
+.dropdown-perfil-contenido {
+    display: none !important; 
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 999999 !important;
+}
 
+/* Esta clase es la que activa el JS al hacer click */
+.dropdown-perfil-contenido.show {
+    display: block !important;
+}
 .dropdown-perfil-contenido a {
     color: white;
     padding: 10px 14px;
@@ -555,10 +559,23 @@ select {
    ========================================================================== */
 @media (max-width: 650px) {
     header {
+        position: relative;
+        z-index: 100 !important;
         padding: 1rem;
+    }
+    .dropdown-perfil-contenido.show {
+        display: block !important;
+        position: fixed !important; /* Sacamos el menú del flujo del header */
+        top: 60px !important;       /* Ajusta este valor si queda muy arriba o abajo */
+        right: 10px !important;
+        left: 10px !important;      /* Se centra un poco mejor en pantallas chicas */
+        z-index: 9999999 !important; /* Prioridad máxima absoluta */
+        width: auto !important;
     }
     
     .header-contenido {
+        position: relative;
+        z-index: 1000;
         align-items: center; 
     }
 
@@ -586,7 +603,7 @@ select {
         padding: 0.8rem 0.6rem !important;
         gap: 0.3rem !important;
         position: relative !important;
-        z-index: 1 !important; 
+        z-index: 0 !important; 
     }
 
     .nombre-equipo {
@@ -658,10 +675,13 @@ select {
 #dropdown-fechas-contenido {
     display: none; /* ESTO ES LO QUE LO OCULTA AL ENTRAR */
     position: absolute;
+    right: 0;
+    top: 110%;
+    width: 150px;
     background-color: #0b3924 !important; 
     border: 2px solid var(--dorado) !important;
     border-radius: 8px;
-    z-index: 99999999;
+    z-index: 5000;
 }
 
 #dropdown-fechas-contenido.mostrar-fechas { 
@@ -698,6 +718,7 @@ header {
         font-weight: bold;
         transform: none !important;
     }
+    
 }
 
 @media (max-width: 400px) {
@@ -705,6 +726,7 @@ header {
         max-width: 60px; 
     }
 }
+
 
 /* ==========================================================================
    ⚙️ VENTANA MODAL: CONFIGURAR PERFIL
@@ -829,4 +851,36 @@ header {
 @keyframes desplegarSuave {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- CORRECCIÓN DEFINITIVA UNIFICADA --- */
+
+.dropdown-perfil-contenido {
+    display: none;
+    background-color: #0b3924;
+    border: 2px solid #fbbf24;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.9);
+    padding: 10px;
+    z-index: 2147483647;
+    position: absolute;
+    top: 100%;
+    right: 0;
+}
+
+/* Solo si es necesario, mantenemos la lógica de clases show */
+.dropdown-perfil-contenido.show {
+    display: block !important;
+}
+
+/* Sobreescritura exclusiva para Mobile */
+@media (max-width: 650px) {
+    .dropdown-perfil-contenido.show {
+        position: fixed !important; /* Forzamos fixed */
+        top: 60px !important;       /* Ajustalo si necesitás más espacio */
+        right: 10px !important;
+        left: auto !important;      /* Cambiado para que no se estire de más */
+        width: 200px !important;    /* Ancho fijo para que no sea un bloque gigante */
+        z-index: 999999999 !important;
+    }
 }
