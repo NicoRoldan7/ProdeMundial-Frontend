@@ -965,27 +965,36 @@ main.contenedor[data-vista-activa="inicio"] .seccion-lista h2 {
 }
 
 @media (max-width: 768px) {
-    html, body {
-    overflow-x: hidden !important;
-    width: 100% !important;
-    position: relative !important;
-}
-    main.contenedor {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-}
+    /* 1. Forzamos que las tarjetas nunca sean más anchas que la mitad de la pantalla (menos el gap) */
     .contenedor-grupos-grid {
-        box-sizing: border-box !important;
-    width: 100vw !important; /* Ancho de la vista */
-    padding: 0 10px !important; /* Un respiro para que no toque los bordes */
-    margin: 0 !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important; /* Asegura 2 columnas */
+        gap: 5px !important; /* Achicamos el espacio entre tarjetas */
+        padding: 5px !important;
+        width: 100vw !important;
+        overflow-x: hidden !important; /* ¡ESTO MATA EL SCROLL HORIZONTAL! */
     }
 
-    /* Opcional: reducir un poco el tamaño de fuente para dispositivos pequeños */
+    /* 2. ACHICAMOS EL CUADRO (La clave está acá) */
     .tarjeta-grupo {
-        width: 100% !important; /* Llena su columna */
+        width: 100% !important;
+        padding: 5px !important; /* Reducimos el relleno interno al mínimo */
         margin: 0 !important;
-        box-sizing: border-box !important;
+        overflow: hidden !important; /* Por si el texto es largo */
+    }
+
+    /* 3. Achicamos texto y bandera para que no empujen el tamaño */
+    .nombre-equipo {
+        font-size: 0.75rem !important; /* Letra un poco más chica */
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important; /* Si el nombre es muy largo, pone tres puntos (...) */
+    }
+
+    .bandera-equipo {
+        width: 20px !important; /* Bandera más chica */
+        height: 15px !important;
+        margin-right: 4px !important;
     }
 }
 
