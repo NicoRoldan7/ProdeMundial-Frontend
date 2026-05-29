@@ -966,16 +966,19 @@ main.contenedor[data-vista-activa="inicio"] .seccion-lista h2 {
 
 @media (max-width: 768px) {
     .contenedor-grupos-grid {
-        /* Cambiamos el grid para tener 2 columnas iguales */
-        grid-template-columns: 1fr 1fr !important;
-        /* Reducimos el espacio entre tarjetas para que quepan mejor */
-        gap: 8px !important;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important; /* Dos columnas */
+        gap: 10px !important; 
+        width: 95% !important; /* Un poquito menos del 100% para que no toque los bordes */
+        margin: 0 auto !important; /* ¡ESTO ES LO QUE CENTRA EL GRID! */
+        padding: 10px 0 !important;
     }
 
     /* Opcional: reducir un poco el tamaño de fuente para dispositivos pequeños */
     .tarjeta-grupo {
-        padding: 10px !important;
-        font-size: 0.8rem !important;
+        width: 100% !important; /* Llena su columna */
+        margin: 0 !important;
+        box-sizing: border-box !important;
     }
 }
 
