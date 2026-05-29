@@ -23,21 +23,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     // En tu lógica de inicio/carga de página:
 // En tu app.js, línea 29 aprox:
 window.addEventListener('DOMContentLoaded', async () => {
-    const usuarioSeleccionado = localStorage.getItem('usuarioId');
-    
-    //Primero, buscamos si el elemento existe en el DOM actual
+    // 1. Buscamos la clave real que aparece en tu inspector (Application > Local Storage)
+    // Según tu imagen, parece que usas 'usuarioProde'
+    const usuarioData = localStorage.getItem('usuarioProde');
     const contenedorPartidos = document.getElementById('contenedor-partidos');
 
-    if (!usuarioSeleccionado) {
-        // Solo intentamos escribir si el elemento realmente existe en esta vista
+    // 2. Verificamos si existe el dato
+    if (!usuarioData) {
         if (contenedorPartidos) {
             contenedorPartidos.innerHTML = `<p class="cargando">Seleccioná tu usuario arriba para ver el fixture...</p>`;
             contenedorPartidos.style.display = "block";
         }
     } else {
-        // Si hay usuario, verificamos si estamos en la vista que contiene los elementos
-        // y llamamos a cargarDashboardInicio
-        await cargarDashboardInicio();
+        // 3. Si existe, parseamos el usuario para obtener su ID
+        try {
+            const usuario = JSON.parse(usuarioData);
+            // Asegúrate de que aquí llames a tu función usando el ID correcto
+            if (contenedorPartidos) {
+                await cargarDashboardInicio();
+            }
+        } catch (e) {
+            console.error("Error al leer el usuario del localStorage:", e);
+        }
     }
 });
 
@@ -830,13 +837,21 @@ const contGrupos = document.getElementById("contenedor-grupos");
 } // <-- Este es el cierre de la función configurarPestañas
 
 // Función para cargar los datos del dashboard
+let cargando = false;
 async function cargarDashboardInicio() {
-    console.log("Cargando grupos desde la API...");
+    if (cargando) {
+        console.warn("Carga ignorada: ya hay una en proceso.");
+        return;
+    }
+    cargando = true; // Bloqueamos la entrada
+    console.log("Cargando grupos...");
+    console.time("carga"); // Cronómetro
     const contenedor = document.getElementById("contenedor-partidos");
-    if (!contenedor) return;
-    
-    contenedor.innerHTML = ""; 
-
+    if (!contenedor){
+        cargando = false; // Liberamos si falla
+        return;
+    }
+    contenedor.innerHTML = "";
     try {
         const resEquipos = await fetch(`${BASE_URL}/equipos`);
         if (!resEquipos.ok) throw new Error("Error al obtener los equipos");
@@ -881,6 +896,8 @@ async function cargarDashboardInicio() {
     } catch (error) {
         console.error("Error cargando grupos:", error);
         contenedor.innerHTML = "<p>Error al cargar. Intentá de nuevo.</p>";
+    }finally {
+        cargando = false; // SIEMPRE liberamos el bloqueo al terminar
     }
 }
 
