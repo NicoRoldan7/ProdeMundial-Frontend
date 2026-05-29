@@ -18,32 +18,32 @@ let pestañaActiva = "inicio";
 
 // 🚀 UNIFICADO: La carga inicial de la página configurando todo el Front
 document.addEventListener("DOMContentLoaded", async () => {
-    
+    let pestañaActiva = "inicio";
 
     // En tu lógica de inicio/carga de página:
 // En tu app.js, línea 29 aprox:
 window.addEventListener('DOMContentLoaded', async () => {
-    // 1. Buscamos la clave real que aparece en tu inspector (Application > Local Storage)
-    // Según tu imagen, parece que usas 'usuarioProde'
     const usuarioData = localStorage.getItem('usuarioProde');
     const contenedorPartidos = document.getElementById('contenedor-partidos');
+    
+    // --- NUEVO: Detectar si estamos en inicio ---
+    // Si no tienes una forma de saber la pestaña, por defecto asumimos inicio
+    // pero podemos forzar el título al cargar:
+    const titulo = document.getElementById("titulo-dinamico");
 
-    // 2. Verificamos si existe el dato
     if (!usuarioData) {
         if (contenedorPartidos) {
             contenedorPartidos.innerHTML = `<p class="cargando">Seleccioná tu usuario arriba para ver el fixture...</p>`;
             contenedorPartidos.style.display = "block";
         }
     } else {
-        // 3. Si existe, parseamos el usuario para obtener su ID
         try {
-            const usuario = JSON.parse(usuarioData);
-            // Asegúrate de que aquí llames a tu función usando el ID correcto
-            if (contenedorPartidos) {
-                await cargarDashboardInicio();
-            }
+            // Cuando la página carga, forzamos el título de inicio
+            if (titulo) titulo.innerHTML = `⚽ <span>Grupos y Partidos</span>`;
+            
+            await cargarDashboardInicio();
         } catch (e) {
-            console.error("Error al leer el usuario del localStorage:", e);
+            console.error("Error al cargar:", e);
         }
     }
 });
@@ -302,10 +302,6 @@ window.addEventListener("click", () => {
         });
     }
 
-    // =========================================================================
-    // 📱 NUEVA LÓGICA EXCLUSIVA: DESPLEGABLE DE FECHAS PARA CELULARES
-    // =========================================================================
-  // 📱 FIX RADICAL: El menú se mueve al body y se posiciona inline
 // 📱 FIX: Solo mover al body si es pantalla chica (Móvil)
 const btnFechas = document.getElementById("btn-fechas-trigger");
 const dropdownFechas = document.getElementById("dropdown-fechas-contenido");
@@ -620,7 +616,17 @@ async function cargarTableroPartidos() {
         console.log("Partidos que pasaron el filtro:", partidosFiltrados.length);
 
         // 3. TERCERO: Dibujar en pantalla
-        // Reemplazá el bloque del DIBUJADO por este:
+        const titulo = document.getElementById("titulo-dinamico");
+
+        if (titulo) {
+    if (pestañaActiva === "inicio") {
+        titulo.innerHTML = `⚽ <span>Grupos y Partidos</span>`;
+    } else {
+        // Solo ponemos "Fixture" si realmente estamos en una pestaña de fecha
+        titulo.innerHTML = `📝 <span>Fixture de Predicción</span>`;
+    }
+}
+
 partidosFiltrados.forEach(partido => {
     const local = mapaEquipos[partido.localId] || { nombre: "Local", logoUrl: "" };
     const visitante = mapaEquipos[partido.visitanteId] || { nombre: "Visitante", logoUrl: "" };
@@ -839,6 +845,8 @@ const contGrupos = document.getElementById("contenedor-grupos");
 // Función para cargar los datos del dashboard
 let cargando = false;
 async function cargarDashboardInicio() {
+    document.getElementById("titulo-dinamico").innerText = "Grupos y partidos en vivo";
+    actualizarTitulo("inicio");
     if (cargando) {
         console.warn("Carga ignorada: ya hay una en proceso.");
         return;
@@ -947,5 +955,15 @@ if (logoInicio) {
             botonTabInicio.click(); // 💥 ¡Magia! Esto dispara el evento click que ya programamos antes
         }
     });
+}
+// En lugar de solo el texto, inyectamos un pequeño icono también
+function actualizarTitulo(pestanaActiva) {
+    const titulo = document.getElementById("titulo-dinamico");
+    
+    if (pestanaActiva === "inicio") {
+        titulo.innerHTML = `⚽ <span style="margin-left:10px">Grupos y Partidos</span>`;
+    } else {
+        titulo.innerHTML = `⚽ <span style="margin-left:10px">Fixture de Predicción</span>`;
+    }
 }
 

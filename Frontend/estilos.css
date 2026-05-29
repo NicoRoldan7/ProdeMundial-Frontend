@@ -1003,6 +1003,38 @@ main.contenedor[data-vista-activa="inicio"] .seccion-lista h2 {
         margin-right: 4px !important;
     }
 }
+#titulo-dinamico {
+    /* Tipografía con impacto */
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 800;
+    font-size: 1.6rem;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 20px 10px;
+    
+    /* El toque fachero: Fondo semi-transparente estilo "cristal" */
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    padding: 15px;
+    border-radius: 12px;
+    
+    /* Borde neón sutil */
+    border: 1px solid rgba(47, 194, 194, 0.3);
+    color: #01413f;
+    
+    /* Efecto de luz */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    
+    /* Animación de entrada */
+    animation: fadeInDown 0.5s ease-out;
+}
+
+/* Animación para que aparezca "facherito" */
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 
 
 
