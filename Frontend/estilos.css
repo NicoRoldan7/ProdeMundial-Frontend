@@ -965,17 +965,20 @@ main.contenedor[data-vista-activa="inicio"] .seccion-lista h2 {
 }
 
 @media (max-width: 768px) {
+    html, body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    position: relative !important;
+}
     main.contenedor {
     padding-left: 0 !important;
     padding-right: 0 !important;
 }
     .contenedor-grupos-grid {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important; /* Dos columnas */
-        gap: 10px !important; 
-        width: 95% !important; /* Un poquito menos del 100% para que no toque los bordes */
-        margin: 0 auto !important; /* ¡ESTO ES LO QUE CENTRA EL GRID! */
-        padding: 10px 0 !important;
+        box-sizing: border-box !important;
+    width: 100vw !important; /* Ancho de la vista */
+    padding: 0 10px !important; /* Un respiro para que no toque los bordes */
+    margin: 0 !important;
     }
 
     /* Opcional: reducir un poco el tamaño de fuente para dispositivos pequeños */
