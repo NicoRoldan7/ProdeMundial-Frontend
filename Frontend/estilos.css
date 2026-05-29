@@ -1002,6 +1002,10 @@ main.contenedor[data-vista-activa="inicio"] .seccion-lista h2 {
         height: 15px !important;
         margin-right: 4px !important;
     }
+    #titulo-dinamico{
+         font-size: 1.3rem; /* Un poquito más chico en celu */
+         letter-spacing: 1px;
+    }
 }
 #titulo-dinamico {
     /* Tipografía con impacto */
@@ -1033,6 +1037,12 @@ main.contenedor[data-vista-activa="inicio"] .seccion-lista h2 {
 @keyframes fadeInDown {
     from { opacity: 0; transform: translateY(-20px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+    .titulo-seccion {
+       
+    }
 }
 
 
