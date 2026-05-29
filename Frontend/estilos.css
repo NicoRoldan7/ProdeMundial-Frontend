@@ -35,7 +35,7 @@ body {
 .contenedor {
     max-width: 1200px;
     width: 100%;
-    margin: 0 auto;
+    margin: 50px auto;
     padding: 2rem 3rem; /* Más aire en los laterales para despegar del borde */
 }
 
@@ -47,12 +47,12 @@ header {
     width: 100%;
     z-index: 1000;
     overflow: visible !important;
-    background: linear-gradient(180deg, rgba(9, 49, 31, 0.2) 0%, rgba(6, 36, 23, 0.2) 100%);
+    background: linear-gradient(180deg, rgba(71, 5, 5, 0.2) 0%, rgba(23, 3, 137, 0.2) 100%);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px); /* Para asegurar compatibilidad en Safari/iOS */
     padding: 1.5rem 3rem; 
     border-bottom: 4px solid var(--dorado);
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0); /* Bajamos un poco la sombra para que sea más sutil */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
 }
 
 .header-contenido {
@@ -101,13 +101,13 @@ header p {
     align-items: center;
     padding: 1rem;
     z-index: 9999;
-    background: linear-gradient(rgba(4, 23, 14, 0.5), rgba(6, 36, 23, 0.7)), 
+    background: linear-gradient(180deg, rgba(71, 5, 5, 0.2) 0%, rgba(23, 3, 137, 0.2) 100%), 
                 url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1920&q=80') no-repeat center center;
     background-size: cover;
 }
 
 .tarjeta-login {
-    background: rgba(11, 57, 36, 0.35); /* Glassmorphism total */
+    background: linear-gradient(180deg, rgba(71, 5, 5, 0.2) 0%, rgba(23, 3, 137, 0.2) 100%);
     backdrop-filter: blur(16px); 
     -webkit-backdrop-filter: blur(16px);
     border: 2px solid var(--dorado);
@@ -291,9 +291,9 @@ select {
 }
 
 .tab-btn {
-    background: rgba(4, 23, 14, 0.8);
+    background: linear-gradient(180deg, rgba(71, 5, 5, 0.2) 0%, rgba(23, 3, 137, 0.5) 100%);
     color: #ffffff;
-    border: 1px solid var(--borde);
+    border: 1px solid rgb(22, 3, 160);
     padding: 0.7rem 1rem;
     font-size: 0.9rem;
     font-weight: 700;
@@ -305,7 +305,7 @@ select {
 }
 
 .tab-btn:hover {
-    background: rgba(22, 91, 59, 0.5);
+    background: rgb(48, 1, 8);
     color: var(--dorado);
 }
 
@@ -336,7 +336,7 @@ select {
     padding: 1rem 1.2rem !important;
     
     /* 🪟 GLASSMORPHISM para integrar las tarjetas con el fondo de cancha */
-    background: linear-gradient(135deg, rgba(11, 57, 40, 0.7) 0%, rgba(8, 45, 28, 0.6) 100%) !important;
+    background: linear-gradient(180deg, rgba(71, 5, 5, 0.2) 0%, rgba(23, 3, 137, 0.5) 100%);;
     backdrop-filter: blur(8px) !important;
     -webkit-backdrop-filter: blur(8px) !important;
     
@@ -410,7 +410,7 @@ select {
     display: flex;
     align-items: center;
     gap: 6px;
-    background: rgba(4, 23, 14, 0.8); 
+    background: linear-gradient(180deg, rgba(71, 5, 5, 0.2) 0%, rgba(23, 3, 137, 0.2) 100%);
     padding: 0.4rem 0.8rem;
     border-radius: 8px;
     border: 1px solid var(--borde);
@@ -433,8 +433,7 @@ select {
 .tarjeta-formulario input[type="number"] {
     width: 48px !important;
     height: 38px !important;
-    background: #062417 !important;
-    border: 1px solid var(--borde) !important;
+   background: linear-gradient(180deg, rgba(71, 5, 5, 0.2) 0%, rgba(23, 3, 137, 0.2) 100%);
     border-radius: 6px !important;
     color: #ffffff !important;
     font-size: 1.2rem !important;
@@ -448,7 +447,7 @@ select {
     outline: none !important;
     border-color: var(--exito) !important;
     box-shadow: 0 0 10px rgba(16, 185, 129, 0.7) !important;
-    background: rgba(16, 185, 129, 0.15) !important;
+    background: linear-gradient(180deg, rgba(71, 5, 5, 0.2) 0%, rgba(23, 3, 137, 0.2) 100%);
     transform: scale(1.1);
 }
 
@@ -500,7 +499,7 @@ select {
 }
 
 .btn-perfil-trigger {
-    background: #124d32;
+    background: linear-gradient(180deg, rgba(71, 5, 5, 0.2) 0%, rgba(23, 3, 137, 0.2) 100%);
     color: #ffffff;
     border: 1px solid var(--dorado);
     padding: 0.5rem 1rem;
@@ -515,17 +514,17 @@ select {
 }
 
 .btn-perfil-trigger:hover {
-    background: #165b3b;
+    background: linear-gradient(180deg, rgba(71, 5, 5, 0.2) 0%, rgba(23, 3, 137, 0.2) 100%);
     box-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
 }
-/* Asegura que el contenedor tenga posición relativa */
+
 /* Aseguramos que el contenedor padre mantenga la posición */
 .menu-perfil-contenedor {
     position: relative !important;
 }
 
 /* El menú debe estar oculto por defecto */
-.dropdown-perfil-contenido {
+.-contenido {
     display: none !important; 
     position: absolute;
     top: 100%;
@@ -557,14 +556,14 @@ select {
 /* ==========================================================================
     📱 ADAPTACIÓN OPTIMIZADA EXCLUSIVA PARA CELULARES (MÁXIMO 650PX)
    ========================================================================== */
-@media (max-width: 650px) {
+     @media (max-width: 650px) {
     header {
         position: relative;
         z-index: 100 !important;
         padding: 1rem;
-        overflow: visible !important; /* Asegura que el header no limite el desborde */
+        overflow: visible !important; /*Asegura que el header no limite el desborde */
     }
-    
+
     .dropdown-perfil-contenido.show {
         display: block !important;
         position: fixed !important; 
@@ -601,7 +600,7 @@ select {
     }
 
     /* Partidos de las Fechas */
-    .tarjeta-formulario {
+     .tarjeta-formulario {
         padding: 0.8rem 0.6rem !important;
         gap: 0.3rem !important;
         position: relative !important;
@@ -632,93 +631,32 @@ select {
         max-width: 90%; 
         font-size: 1rem;
         padding: 0.9rem 1.5rem;
-    }
+    } 
 
     /* Ocultamos las pestañas estiradas en Mobile */
     .contenedor-pestañas-escritorio, 
     #pestañas-contenedor, 
     .pestañas-scroll {
         display: none !important;
-    }
+    }  
 
  /* ==========================================================================
        ⚽ NUEVO: FIX PARA LOS GRUPOS EN INICIO (2 POR COLUMNA) - SOLUCIÓN JS
        ========================================================================== */
-    
-    /* El contenedor principal de la pestaña de inicio se comporta normal en vertical */
-    main.contenedor[data-vista-activa="inicio"],
-    #contenedor-grupos {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: flex-start !important; /* Fuerza a tirar todo hacia arriba */
-        width: 100% !important;
-        padding: 10px 6px 10px 6px !important; /* 🔥 Bajamos drásticamente el espacio superior */
-        margin: 0 auto !important;
-        box-sizing: border-box !important;
-    }
+
 
     /* El título exclusivo que pusimos en el JS se centra de lado a lado */
     .titulo-seccion-vivo {
         width: 100% !important;
         text-align: center !important;
-        margin: -40px 0 0px 0 !important; /* 🔥 Solo 5px de espacio hacia el header */
+        margin: -40px 0 0px 0 !important; /*🔥 Solo 5px de espacio hacia el header */
         font-size: 1.3rem !important;
-    }
-
-    /* 🔥 EL NUEVO SUB-CONTENEDOR: Este maneja las dos columnas de forma perfecta */
-    .contenedor-grid-bloque {
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important; /* DOS POR FILA */
-        gap: 8px !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box !important;
-    }
-
-    /* Las tarjetas se adaptan solas a su celda */
-    .tarjeta-grupo {
-        width: 100% !important; 
-        min-width: 0 !important; /* Clave mágica para dejarse encoger */
-        max-width: 100% !important;
-        padding: 8px 6px !important; 
-        margin: 0 !important;
-        background: #fff !important;
-        box-sizing: border-box !important;
-    }
-
-    /* Ajustes de letra para que no se rompan las filas */
-    .tarjeta-grupo .titulo-grupo {
-        font-size: 0.85rem !important;
-        margin-bottom: 6px !important;
-    }
-
-    .tarjeta-grupo .fila-pais {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        gap: 4px !important;
-        margin-bottom: 5px !important;
-    }
-
-    .tarjeta-grupo .bandera-equipo {
-        width: 16px !important;
-        height: 16px !important;
-        margin-right: 4px !important;
-        flex-shrink: 0 !important;
-    }
-
-    .tarjeta-grupo .nombre-equipo {
-        font-size: 0.68rem !important;
-        white-space: nowrap !important;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+    } 
 
     /* ==========================================================================
        🚀 FIX DEFINITIVO PARA EL DESPLEGABLE MOBILE (Sigue adentro del Media)
        ========================================================================== */
-    .contenedor-desplegable-fechas {
+     .contenedor-desplegable-fechas {
         display: flex !important;
         justify-content: center !important; 
         align-items: center !important;
@@ -751,7 +689,7 @@ select {
         right: 0;
         top: 110%;
         width: 150px;
-        background-color: #0b3924 !important; 
+        background-color: #0409ad !important; 
         border: 2px solid var(--dorado) !important;
         border-radius: 8px;
         z-index: 5000;
@@ -785,16 +723,8 @@ select {
         color: var(--dorado) !important;
         font-weight: bold;
         transform: none !important;
-    }
-    
-} /* <-- ESTE CIERRA EL MEDIA QUERY DE VERDAD ABAJO DE TODO */
-
-@media (max-width: 400px) {
-    .nombre-equipo {
-        max-width: 60px; 
-    }
-}
-
+    } 
+} 
 
 /* ==========================================================================
    ⚙️ VENTANA MODAL: CONFIGURAR PERFIL
@@ -805,7 +735,7 @@ select {
     left: 0;
     width: 100%;
     height: 100vh;
-    background-color: rgba(4, 23, 14, 0.85); 
+    background: linear-gradient(180deg, rgba(71, 5, 5, 0.2) 0%, rgba(23, 3, 137, 0.2) 100%);
     backdrop-filter: blur(6px); 
     display: flex;              
     justify-content: center;    
@@ -925,7 +855,7 @@ select {
 
 .dropdown-perfil-contenido {
     display: none;
-    background-color: #0b3924;
+    background-color:rgba(23, 3, 137, 0.9);
     border: 2px solid #fbbf24;
     border-radius: 8px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.9);
@@ -942,35 +872,15 @@ select {
 }
 
 /* Sobreescritura exclusiva para Mobile */
-@media (max-width: 650px) {
+ @media (max-width: 650px) {
     .dropdown-perfil-contenido.show {
         position: fixed !important; /* Forzamos fixed */
-        top: 60px !important;       /* Ajustalo si necesitás más espacio */
+        top: 60px !important;    /*   Ajustalo si necesitás más espacio */
         right: 10px !important;
-        left: auto !important;      /* Cambiado para que no se estire de más */
-        width: 200px !important;    /* Ancho fijo para que no sea un bloque gigante */
+        left: auto !important;     /* Cambiado para que no se estire de más */
+        width: 200px !important;   /* Ancho fijo para que no sea un bloque gigante */
         z-index: 999999999 !important;
     }
-}
-
-#vista-inicio {
-    display: flex;
-    flex-direction: column;
-    gap: 40px; /* Separación clara entre grupos y partidos */
-}
-
-.titulo-seccion {
-    color: var(--dorado);
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.lista-partidos {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    max-width: 600px; /* Que los partidos no se estiren demasiado */
-    margin: 0 auto;
 }
 
 /* 1. Por defecto, si el contenedor está mostrando el 'inicio', ocultamos el botón global sin vueltas */
@@ -990,144 +900,114 @@ main.contenedor[data-vista-activa="inicio"] .seccion-lista h2 {
     display: none !important;
 }
 
-/* ==========================================
-   ESTILOS GENERALES (Para Computadora / Escritorio)
-   ========================================== */
-.grid-grupos, 
-#contenedor-grupos {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-    padding: 20px;
-}
+/* ==========================================================================
+   🚀 CONFIGURACIÓN MAESTRA DE COLUMNAS (Para dispositivos móviles)
+   ========================================================================== */
 
-/* La tarjeta con las medidas originales que tenías en el JS */
-.tarjeta-grupo {
-    border: 1px solid #ccc;
-    padding: 15px;
-    border-radius: 8px;
-    width: 260px; /* Ancho original en PC */
-    background: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    box-sizing: border-box;
-}
-
-.tarjeta-grupo .titulo-grupo {
-    margin-top: 0;
-    color: #333;
-    border-bottom: 2px solid #e67e22;
-    padding-bottom: 5px;
-    text-align: center;
-    font-size: 1.15rem;
-}
-
-.tarjeta-grupo .lista-equipos {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.tarjeta-grupo .fila-pais {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.tarjeta-grupo .bandera-equipo {
-    width: 30px;
-    height: 30px;
-    margin-right: 10px;
-    object-fit: contain;
-}
-
-.tarjeta-grupo .nombre-equipo {
-    font-weight: 500;
-    color: #333;
-}
-
-
-/* ==========================================
-   📱 CONFIGURACIÓN PARA CELULARES (Hasta 768px)
-   ========================================== */
 @media (max-width: 768px) {
     
-    /* 1. Apuntamos únicamente al div que tiene adentro las tarjetas de los grupos */
-    .grid-grupos,
-    #contenedor-grupos {
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important; /* 🔥 DOS COLUMNAS REALES */
-        gap: 8px !important; /* Espacio controlado entre tarjetas */
-        padding: 4px !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box !important;
-    }
-
-    /* 2. El título se queda afuera del grid, ocupando todo el ancho arriba */
-    main.contenedor[data-vista-activa="inicio"] h2,
-    main.contenedor[data-vista-activa="inicio"] .seccion-tab h2 {
-        grid-column: span 2 !important; /* Si se mete en el grid, le decimos que ocupe las 2 columnas */
-        width: 100% !important;
-        text-align: center !important; /* Centradito para que quede facha */
-        margin-bottom: 12px !important;
-    }
-
-    /* 3. Ajustamos las tarjetas para que no se estiren */
-    .tarjeta-grupo {
-        width: 100% !important;
-        min-width: 0 !important; /* Clave absoluta para que se achiquen */
-        max-width: 100% !important;
-        padding: 8px 6px !important;
-        margin: 0 !important;
-        box-sizing: border-box !important;
-    }
-
-    /* 4. Textos y fuentes bien compactos */
-    .tarjeta-grupo .titulo-grupo {
-        font-size: 0.85rem !important;
-        margin-bottom: 6px !important;
-    }
-
-    .tarjeta-grupo .fila-pais {
-        margin-bottom: 5px !important;
-        gap: 4px !important;
-    }
-
-    .tarjeta-grupo .bandera-equipo {
-        width: 16px !important;
-        height: 16px !important;
-        margin-right: 4px !important;
-        flex-shrink: 0 !important;
-    }
-
-    .tarjeta-grupo .nombre-equipo {
-        font-size: 0.68rem !important;
-        white-space: nowrap !important;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    /* 🔥 EL SUB-CONTENEDOR DEL GRID: Lo obligamos a centrarse en la pantalla */
-    .contenedor-grid-bloque {
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important; /* Dos por fila */
-        gap: 8px !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        padding: 0 4px !important; /* Un mínimo de aire a los costados */
-        margin: 0 auto !important; /* Clave: Centra el bloque entero */
-        justify-content: center !important; /* Centra las columnas internamente */
-        align-content: center !important;
-        box-sizing: border-box !important;
-    }
-
-    /* Por si el contenedor viejo inyecta un alineado raro desde el JS o HTML */
+    /* 1. Limpiamos el contenedor padre para que no imponga layouts de PC */
+    main.contenedor[data-vista-activa="inicio"],
     #contenedor-grupos {
         display: flex !important;
         flex-direction: column !important;
-        align-items: center !important; /* Alinea título y grid al centro justo */
-        justify-content: center !important;
+        width: 100% !important;
+        padding: 0 5px !important;
+        margin: 0 auto !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 2. El título se queda arriba tranquilo */
+    .titulo-seccion-vivo {
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+    }
+
+    /* 3. EL GRID DE 2 COLUMNAS (Esto es lo único que controla el ancho) */
+    .contenedor-grid-bloque {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important; /* 🔥 El secreto de las 2 columnas */
+        gap: 8px !important;
         width: 100% !important;
         margin: 0 auto !important;
+        padding: 0 !important;
+    }
+
+    /* 4. Aseguramos que las tarjetas se ajusten al espacio */
+    .tarjeta-grupo {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
     }
 }
+/* BORRÁ O COMENTÁ EL MARGIN-TOP DE 150PX QUE ESTÁ EMPUJANDO TODO HACIA ABAJO */
+
+/* IMPORTANTE: Asegurate de que ninguna clase padre tenga display: none */
+.seccion-tab {
+    display: block !important; /* Si la sección padre está oculta, el contenedor no se verá */
+    margin-bottom: -50px;
+}
+
+/* Contenedor principal que hace el Grid */
+.contenedor-grupos-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+    gap: 20px !important;
+    padding: 20px !important;
+    width: 100% !important;
+}
+
+/* Tarjeta individual */
+.tarjeta-grupo {
+    background: #1E2A44 !important; /* Azul profundo */
+    border-radius: 12px !important;
+    padding: 20px !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4) !important;
+    border-bottom: 4px solid #2FC2C2 !important; /* Toque turquesa */
+}
+
+/* Título dorado */
+.titulo-grupo {
+    color: #2FC2C2 !important; /* Color oficial branding */
+    border-bottom: 2px solid #2FC2C2 !important;
+    padding-bottom: 10px !important;
+    text-align: center !important;
+    font-size: 1.3rem !important;
+    margin-bottom: 15px !important;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+/* Lista y filas */
+.lista-equipos {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.fila-pais {
+    display: flex !important;
+    align-items: center !important;
+    margin-bottom: 12px !important;
+}
+
+.bandera-equipo {
+    width: 35px !important;
+    height: 25px !important;
+    margin-right: 12px !important;
+    object-fit: cover !important;
+    border-radius: 4px !important;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+.nombre-equipo {
+    font-size: 1rem !important;
+    color: #ffffff !important;
+}
+
+
+
+
+

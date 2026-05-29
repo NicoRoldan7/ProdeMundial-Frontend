@@ -18,7 +18,29 @@ let pestañaActiva = "inicio";
 
 // 🚀 UNIFICADO: La carga inicial de la página configurando todo el Front
 document.addEventListener("DOMContentLoaded", async () => {
-    console.log("🚀 Inicializando aplicación...");
+    
+
+    // En tu lógica de inicio/carga de página:
+// En tu app.js, línea 29 aprox:
+window.addEventListener('DOMContentLoaded', async () => {
+    const usuarioSeleccionado = localStorage.getItem('usuarioId');
+    
+    //Primero, buscamos si el elemento existe en el DOM actual
+    const contenedorPartidos = document.getElementById('contenedor-partidos');
+
+    if (!usuarioSeleccionado) {
+        // Solo intentamos escribir si el elemento realmente existe en esta vista
+        if (contenedorPartidos) {
+            contenedorPartidos.innerHTML = `<p class="cargando">Seleccioná tu usuario arriba para ver el fixture...</p>`;
+            contenedorPartidos.style.display = "block";
+        }
+    } else {
+        // Si hay usuario, verificamos si estamos en la vista que contiene los elementos
+        // y llamamos a cargarDashboardInicio
+        await cargarDashboardInicio();
+    }
+});
+
 
     // 🔥 Inicializar los clics de las pestañas de una (afecta a PC y celular)
     configurarPestañas();
@@ -325,6 +347,17 @@ if (btnFechas && dropdownFechas) {
 
     // Chequear sesión persistente al iniciar (Fix F5)
     verificarSesionExistente();
+
+    // Agregá esto al final de tu archivo JS o donde inicialices los eventos
+window.addEventListener('load', async () => {
+    // 1. Verificamos si hay un usuario logueado (ajustá esto a tu lógica de nombre/ID)
+    const usuarioLogueado = document.querySelector('.nombre-usuario')?.innerText; // Ejemplo de cómo tomarlo
+
+    if (usuarioLogueado) {
+        // 2. Si ya hay alguien, forzamos la carga del dashboard de inicio
+        await cargarDashboardInicio();
+    }
+});
 });
 
 
@@ -553,33 +586,10 @@ function cerrarSesion() {
 
 // 2. DIBUJAR EL FIXTURE FILTRADO POR PESTAÑAS
 async function cargarTableroPartidos() {
-    if (pestañaActiva === "inicio") return;
+    console.log("--- INICIANDO CARGA ---");
     const contenedor = document.getElementById("contenedor-partidos");
-    const btnGlobalContainer = document.querySelector(".contenedor-boton-global");
-    if (!contenedor) return; // Seguridad extra
-    const usuarioGuardado = localStorage.getItem("usuarioProde");
-    if (!usuarioGuardado) return;
-    
-    const usuario = JSON.parse(usuarioGuardado);
-    const usuarioId = usuario.id || 1; 
-
-    if (btnGlobalContainer) btnGlobalContainer.style.display = "none";
-
-    if (pestañaActiva === "general") {
-        contenedor.innerHTML = `
-            <div class="tarjeta-formulario" style="text-align: center; color: white;">
-                <h2>📊 Tabla de Posiciones Generales</h2>
-                <p>Acá va a ir la tabla con los puntajes acumulados de todos los pibes de la app.</p>
-            </div>`;
-        return;
-    }
-
-// En tu función de cambio de pestaña:
-if (pestañaActiva === "inicio") {
-    // 1. Limpiamos el contenedor (opcional pero recomendado)
-    const contenedor = document.getElementById("vista-inicio");
-    contenedor.innerHTML = ""; 
-}
+    contenedor.innerHTML = "";
+    if (!contenedor) return;
 
     try {
         const [resPartidos, resEquipos] = await Promise.all([
@@ -590,76 +600,48 @@ if (pestañaActiva === "inicio") {
         const partidos = await resPartidos.json();
         const equipos = await resEquipos.json();
 
-        let prediccionesUsuario = [];
-        try {
-            const resPredicciones = await fetch(`${BASE_URL}/predicciones?uId=${usuarioId}`);
-            if (resPredicciones.ok) {
-                prediccionesUsuario = await resPredicciones.json();
-            }
-        } catch (errPred) {
-            console.warn("❌ Error al consultar predicciones, se ignora:", errPred);
-        }
-
+        // 1. PRIMERO: Crear el mapa de equipos (esto es lo que faltaba)
         const mapaEquipos = {};
-        equipos.forEach(e => mapaEquipos[e.id] = e); 
+        equipos.forEach(e => mapaEquipos[e.id] = e);
 
-        const mapaPredicciones = {};
-        prediccionesUsuario.forEach(p => mapaPredicciones[p.partidoId] = p); 
-
-        contenedor.innerHTML = "";
-
-        // Equivalencias de GUIDs para las fechas
-        const equivalenciasFechas = {
-            "03ad09d5-7d3e-4d0e-a473-cbd8837fe590": "fecha1"
-        };
-
+        // 2. SEGUNDO: Filtrar los partidos
+        const idEsperado = "03ad09d5-7d3e-4d0e-a473-cbd8837fe590";
         const partidosFiltrados = partidos.filter(p => {
-            if (!p.fechaId) return false;
-            const pestañaAsociada = equivalenciasFechas[p.fechaId];
-            return pestañaAsociada === pestañaActiva;
+            return String(p.fechaId) === idEsperado && pestañaActiva === "fecha1";
         });
 
-        if (partidosFiltrados.length === 0) {
-            contenedor.innerHTML = `<p class="cargando">No hay partidos cargados para la sección: <b>${pestañaActiva}</b> todavía.</p>`;
-            return;
-        }
+        console.log("Partidos que pasaron el filtro:", partidosFiltrados.length);
 
-        if (btnGlobalContainer) btnGlobalContainer.style.display = "flex";
+        // 3. TERCERO: Dibujar en pantalla
+        // Reemplazá el bloque del DIBUJADO por este:
+partidosFiltrados.forEach(partido => {
+    const local = mapaEquipos[partido.localId] || { nombre: "Local", logoUrl: "" };
+    const visitante = mapaEquipos[partido.visitanteId] || { nombre: "Visitante", logoUrl: "" };
 
-        partidosFiltrados.forEach(partido => {
-            const local = mapaEquipos[partido.localId] || { nombre: "Local", logoUrl: "" };
-            const visitante = mapaEquipos[partido.visitanteId] || { nombre: "Visitante", logoUrl: "" };
-
-            const jugadaExistente = mapaPredicciones[partido.id]; 
-            const golesLocalDefault = jugadaExistente ? jugadaExistente.golesLocalVoto : 0;
-            const golesVisitanteDefault = jugadaExistente ? jugadaExistente.golesVisitanteVoto : 0;
-
-            const fila = document.createElement("div");
-            fila.className = "tarjeta-formulario";
-            fila.setAttribute("data-partido-id", partido.id); 
-            fila.style = "margin-bottom: 16px;"; 
-            
-            fila.innerHTML = `
-                <div class="bloque-equipo local">
-                    <span class="nombre-equipo">${local.nombre}</span>
-                    <img src="${local.logoUrl}" onerror="this.src='https://placehold.co/40?text=⚽'" class="escudo">
-                </div>
-                <div class="bloque-goles">
-                    <input type="number" class="input-goles-local" data-partido="${partido.id}" min="0" value="${golesLocalDefault}">
-                    <span class="versus">VS</span>
-                    <input type="number" class="input-goles-visitante" data-partido="${partido.id}" min="0" value="${golesVisitanteDefault}">
-                </div>
-                <div class="bloque-equipo visitante">
-                    <img src="${visitante.logoUrl}" onerror="this.src='https://placehold.co/40?text=⚽'" class="escudo">
-                    <span class="nombre-equipo">${visitante.nombre}</span>
-                </div>
-            `;
-            contenedor.appendChild(fila);
-        });
-
+    const fila = document.createElement("div");
+    fila.className = "tarjeta-formulario"; // Esto usa el CSS original
+    
+    // Este HTML es el que hace que se vean con el diseño original
+    fila.innerHTML = `
+        <div class="bloque-equipo local">
+            <span class="nombre-equipo">${local.nombre}</span>
+            <img src="${local.logoUrl}" onerror="this.src='https://placehold.co/40?text=⚽'" class="escudo">
+        </div>
+        <div class="bloque-goles">
+            <input type="number" class="input-goles-local" data-partido="${partido.id}" min="0" value="0">
+            <span class="versus">VS</span>
+            <input type="number" class="input-goles-visitante" data-partido="${partido.id}" min="0" value="0">
+        </div>
+        <div class="bloque-equipo visitante">
+            <img src="${visitante.logoUrl}" onerror="this.src='https://placehold.co/40?text=⚽'" class="escudo">
+            <span class="nombre-equipo">${visitante.nombre}</span>
+        </div>
+    `;
+    
+    contenedor.appendChild(fila);
+});
     } catch (error) {
-        console.error("❌ Error crítico al armar el tablero:", error);
-        contenedor.innerHTML = `<p class="cargando" style="color: #ef4444;">Hubo un error al cargar los datos del servidor.</p>`;
+        console.error("❌ Error:", error);
     }
 }
 
@@ -787,6 +769,7 @@ function configurarPestañas() {
     botonesPestañas.forEach(boton => {
         boton.addEventListener("click", (e) => {
             e.preventDefault();
+            const contenedorPrincipal = document.getElementById("contenedor-partidos");
             const pestañaSeleccionada = boton.getAttribute("data-tab");
             
             // 1. Limpieza de botones activos
@@ -808,22 +791,28 @@ function configurarPestañas() {
                 mainContenedor.setAttribute("data-vista-activa", pestañaSeleccionada);
             }
 
-            // Limpieza de contenedores
-            const contenedorPrincipal = document.getElementById("contenedor-partidos"); 
-            if (contenedorPrincipal) contenedorPrincipal.innerHTML = "";
-            
-            const contGrupos = document.getElementById("contenedor-grupos");
-            const contPartidosInicio = document.getElementById("lista-partidos-en-vivo");
-            if (contGrupos) contGrupos.innerHTML = "";
-            if (contPartidosInicio) contPartidosInicio.innerHTML = "";
+           // --- LIMPIEZA DE CONTENEDORES (CORREGIDA) ---
+const contenedorPartidos = document.getElementById("contenedor-partidos");
+if (contenedorPartidos) contenedorPartidos.innerHTML = ""; // Usamos el nombre correcto
 
+const contGrupos = document.getElementById("contenedor-grupos");
+if (contGrupos) contGrupos.innerHTML = "";
+
+const contPartidosInicio = document.getElementById("lista-partidos-en-vivo");
+if (contPartidosInicio) contPartidosInicio.innerHTML = "";
             // Lógica de carga
             pestañaActiva = pestañaSeleccionada;
-            if (pestañaActiva === "inicio") {
-                cargarDashboardInicio();
-            } else {
-                cargarTableroPartidos();
-            }
+
+if (pestañaActiva === "inicio") {
+    console.log("Cargando inicio..."); // Mirá si esto sale en la consola
+    cargarDashboardInicio();
+} else {
+const contGrupos = document.getElementById("contenedor-grupos");
+    if (contGrupos) contGrupos.innerHTML = "";
+    
+    // LLAMAMOS SOLO A LA FUNCIÓN DE PARTIDOS
+    cargarTableroPartidos();
+}
         });
     });
 
@@ -842,90 +831,56 @@ function configurarPestañas() {
 
 // Función para cargar los datos del dashboard
 async function cargarDashboardInicio() {
-    document.body.classList.add("vista-inicio");
-    // 1. Ocultar el botón apenas entramos a Inicio (así no dependemos de dónde venía el usuario)
-    const botonGuardar = document.getElementById("btn-guardar-prediccion");
-    if (botonGuardar) {
-        botonGuardar.style.display = "none";
-    }
-    const contenedorGrupos = document.getElementById("contenedor-grupos");
+    console.log("Cargando grupos desde la API...");
+    const contenedor = document.getElementById("contenedor-partidos");
+    if (!contenedor) return;
     
-    // Ocultamos el botón de guardar predicción en la pestaña Inicio
-    if (!contenedorGrupos) {
-        console.warn("No se encontró el contenedor-grupos en el DOM.");
-        return;
-    }
-
-    contenedorGrupos.innerHTML = "<p>Cargando Grupos del Mundial...</p>";
+    contenedor.innerHTML = ""; 
 
     try {
-        // 1. Traemos todos los equipos de una sola vez
-        const { data: equipos, error } = await db.from('Equipos').select('*');
-
-        if (error) throw error;
-
-        // 2. Definimos las letras de los 12 grupos (Del Grupo A al L)
-        const letrasGrupos = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+        const resEquipos = await fetch(`${BASE_URL}/equipos`);
+        if (!resEquipos.ok) throw new Error("Error al obtener los equipos");
         
-        // 3. Acá vamos a ir acumulando el HTML de todos los grupos
-        //  AHORA DEJALO ASÍ:
-let htmlDeTodosLosGrupos = `
-    <div style="width: 100%; text-align: center; margin-bottom: 25px;">
-        <h2 style="color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.6); font-size: 24px;"></h2>
-    </div>
-    
-    <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%;">
-`;
-        // 4. Recorremos letra por letra
-        letrasGrupos.forEach(letra => {
-            // Filtramos los equipos de la letra actual
-            const equiposDelGrupo = equipos.filter(equipo => equipo.grupo === letra);
+        const equipos = await resEquipos.json();
 
-           // Si el grupo tiene equipos cargados, armamos su tarjetita
-if (equiposDelGrupo.length > 0) {
-    // 1. Si es el PRIMER grupo (el Grupo A), metemos el título y ABRIMOS el contenedor del grid
-    if (letra === 'A') {
-        htmlDeTodosLosGrupos += `
-            <h2 class="titulo-seccion-vivo" style="width: 100%; text-align: center; margin: 15px 0; color: #fff; font-size: 1.4rem;">
-                ⚽ Grupos y Resultados en Vivo
-            </h2>
-            <div class="contenedor-grid-bloque"> 
-        `;
-    }
+        // Agrupamos equipos
+        const grupos = equipos.reduce((acc, equipo) => {
+            const nombreGrupo = equipo.grupo ? `Grupo ${equipo.grupo}` : "Sin Grupo";
+            if (!acc[nombreGrupo]) acc[nombreGrupo] = [];
+            acc[nombreGrupo].push(equipo);
+            return acc;
+        }, {});
 
-    // 2. Renderizamos la tarjeta del grupo común y corriente
-    htmlDeTodosLosGrupos += `
-        <div class="tarjeta-grupo">
-            <h3 class="titulo-grupo">Grupo ${letra}</h3>
-            <ul class="lista-equipos">
-    `;
-
-    // Metemos los 4 equipos
-    equiposDelGrupo.forEach(equipo => {
-        htmlDeTodosLosGrupos += `
-            <li class="fila-pais">
-                <img src="${equipo.logo_url || 'https://via.placeholder.com/30'}" alt="${equipo.nombre}" class="bandera-equipo">
-                <span class="nombre-equipo">${equipo.nombre}</span>
-            </li>
-        `;
-    });
-    
-    // Acordate de cerrar las etiquetas abajo de tu foreach si no lo tenías separado:
-    htmlDeTodosLosGrupos += `
-            </ul>
-        </div>
-    `;
-}
+        // Creamos el grid
+        const divGrid = document.createElement("div");
+        divGrid.className = "contenedor-grupos-grid"; // Esta clase es clave para el CSS
+        
+        Object.keys(grupos).sort().forEach(nombreGrupo => {
+            const divGrupo = document.createElement("div");
+            divGrupo.className = "tarjeta-grupo"; // Clase para el estilo de la tarjeta
+            
+            // Inyectamos el título y la lista
+            divGrupo.innerHTML = `<h3 class="titulo-grupo">${nombreGrupo}</h3>`;
+            
+            const listaEquipos = document.createElement("ul");
+            listaEquipos.className = "lista-equipos";
+            
+            grupos[nombreGrupo].forEach(eq => {
+                listaEquipos.innerHTML += `
+                    <li class="fila-pais">
+                        <img src="${eq.logoUrl}" class="bandera-equipo" alt="${eq.nombre}">
+                        <span class="nombre-equipo">${eq.nombre}</span>
+                    </li>`;
+            });
+            
+            divGrupo.appendChild(listaEquipos);
+            divGrid.appendChild(divGrupo);
         });
-
-        htmlDeTodosLosGrupos += `</div>`;
-
-        // 5. Metemos todo el bloque gigante de grupos en la pantalla
-        contenedorGrupos.innerHTML = htmlDeTodosLosGrupos;
-
-    } catch (e) {
-        console.error("Error detallado al cargar Inicio:", e);
-        contenedorGrupos.innerHTML = `<p style="color:red;">Error al cargar datos: ${e.message}</p>`;
+        
+        contenedor.appendChild(divGrid);
+    } catch (error) {
+        console.error("Error cargando grupos:", error);
+        contenedor.innerHTML = "<p>Error al cargar. Intentá de nuevo.</p>";
     }
 }
 
