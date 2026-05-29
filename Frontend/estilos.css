@@ -965,6 +965,10 @@ main.contenedor[data-vista-activa="inicio"] .seccion-lista h2 {
 }
 
 @media (max-width: 768px) {
+    main.contenedor {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
     .contenedor-grupos-grid {
         display: grid !important;
         grid-template-columns: 1fr 1fr !important; /* Dos columnas */
