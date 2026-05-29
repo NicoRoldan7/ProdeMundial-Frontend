@@ -968,11 +968,17 @@ main.contenedor[data-vista-activa="inicio"] .seccion-lista h2 {
     /* 1. Forzamos que las tarjetas nunca sean más anchas que la mitad de la pantalla (menos el gap) */
     .contenedor-grupos-grid {
         display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important; /* Asegura 2 columnas */
-        gap: 5px !important; /* Achicamos el espacio entre tarjetas */
-        padding: 5px !important;
-        width: 100vw !important;
-        overflow-x: hidden !important; /* ¡ESTO MATA EL SCROLL HORIZONTAL! */
+        grid-template-columns: 1fr 1fr !important;
+        gap: 5px !important;
+        
+        /* ESTO ES LO QUE MUEVE TODO: */
+        margin-left: 0 !important; 
+        margin-right: 0 !important;
+        padding-left: 5px !important; /* Un pequeñísimo margen para que no toque el borde de la pantalla */
+        padding-right: 5px !important;
+        
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     /* 2. ACHICAMOS EL CUADRO (La clave está acá) */
