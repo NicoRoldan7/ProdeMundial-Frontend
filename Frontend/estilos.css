@@ -900,49 +900,6 @@ main.contenedor[data-vista-activa="inicio"] .seccion-lista h2 {
     display: none !important;
 }
 
-/* ==========================================================================
-   🚀 CONFIGURACIÓN MAESTRA DE COLUMNAS (Para dispositivos móviles)
-   ========================================================================== */
-
-@media (max-width: 768px) {
-    
-    /* 1. Limpiamos el contenedor padre para que no imponga layouts de PC */
-    main.contenedor[data-vista-activa="inicio"],
-    #contenedor-grupos {
-        display: flex !important;
-        flex-direction: column !important;
-        width: 100% !important;
-        padding: 0 5px !important;
-        margin: 0 auto !important;
-        box-sizing: border-box !important;
-    }
-
-    /* 2. El título se queda arriba tranquilo */
-    .titulo-seccion-vivo {
-        display: block !important;
-        width: 100% !important;
-        text-align: center !important;
-    }
-
-    /* 3. EL GRID DE 2 COLUMNAS (Esto es lo único que controla el ancho) */
-    .contenedor-grid-bloque {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important; /* 🔥 El secreto de las 2 columnas */
-        gap: 8px !important;
-        width: 100% !important;
-        margin: 0 auto !important;
-        padding: 0 !important;
-    }
-
-    /* 4. Aseguramos que las tarjetas se ajusten al espacio */
-    .tarjeta-grupo {
-        width: 100% !important;
-        box-sizing: border-box !important;
-        margin: 0 !important;
-    }
-}
-/* BORRÁ O COMENTÁ EL MARGIN-TOP DE 150PX QUE ESTÁ EMPUJANDO TODO HACIA ABAJO */
-
 /* IMPORTANTE: Asegurate de que ninguna clase padre tenga display: none */
 .seccion-tab {
     display: block !important; /* Si la sección padre está oculta, el contenedor no se verá */
@@ -1005,6 +962,21 @@ main.contenedor[data-vista-activa="inicio"] .seccion-lista h2 {
 .nombre-equipo {
     font-size: 1rem !important;
     color: #ffffff !important;
+}
+
+@media (max-width: 768px) {
+    .contenedor-grupos-grid {
+        /* Cambiamos el grid para tener 2 columnas iguales */
+        grid-template-columns: 1fr 1fr !important;
+        /* Reducimos el espacio entre tarjetas para que quepan mejor */
+        gap: 8px !important;
+    }
+
+    /* Opcional: reducir un poco el tamaño de fuente para dispositivos pequeños */
+    .tarjeta-grupo {
+        padding: 10px !important;
+        font-size: 0.8rem !important;
+    }
 }
 
 
