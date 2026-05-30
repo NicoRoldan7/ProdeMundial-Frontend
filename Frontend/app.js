@@ -937,14 +937,14 @@ partidosValidos.forEach(p => {
     const horaMostrar = p.hora ? p.hora.substring(0, 5) : "--:--";
 
     divPartidos.innerHTML += `
-        <div class="partido-fila">
-            <span class="fecha-etiqueta">${fechaMostrar} ${horaMostrar}</span>
-            <div class="duelo">
-                <img src="${local?.logoUrl}" class="mini-flag" alt="Local"> 
-                <span class="vs-txt">VS</span> 
-                <img src="${vis?.logoUrl}" class="mini-flag" alt="Visitante">
-            </div>
-        </div>`;
+    <div class="partido-fila">
+        <span class="fecha-etiqueta">${fechaMostrar} ${horaMostrar}</span>
+        <div class="duelo">
+            <img src="${local?.logoUrl}" class="mini-flag"> 
+            <span class="vs-txt">VS</span> 
+            <img src="${vis?.logoUrl}" class="mini-flag">
+        </div>
+    </div>`;
 });
             } else {
                 divPartidos.innerHTML = "<p>No hay partidos cargados.</p>";

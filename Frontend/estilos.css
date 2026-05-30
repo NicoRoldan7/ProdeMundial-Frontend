@@ -1039,12 +1039,6 @@ main.contenedor[data-vista-activa="inicio"] .seccion-lista h2 {
     to { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 768px) {
-    .titulo-seccion {
-       
-    }
-}
-
 .contenedor-partidos-oculto {
     margin: 10px;
     padding: 10px;
@@ -1135,51 +1129,50 @@ main.contenedor[data-vista-activa="inicio"] .seccion-lista h2 {
 
 /* Esto se aplica solo en pantallas pequeñas (celulares) */
 @media (max-width: 600px) {
-    #divPartidos {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        padding: 10px;
-        box-sizing: border-box;
-    }
-
+    /* 1. Limpiamos el contenedor para que no tenga doble recuadro */
     .partido-fila {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
+        justify-content: space-between; /* Fecha a la izquierda, banderas a la derecha */
         align-items: center;
-        background-color: rgba(255, 255, 255, 0.05);
-        padding: 8px;
-        margin-bottom: 8px;
-        border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background-color: rgba(255, 255, 255, 0.05); /* Fondo apenas visible */
         
-        /* Forzamos límites para que no se salga */
-        width: 100%; 
-        box-sizing: border-box;
-        overflow: hidden; 
+        /* Eliminamos bordes y sombras para que no haya 'doble recuadro' */
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0; 
+        
+        /* Ocupamos todo el ancho posible */
+        width: 100%;
+        padding: 10px 5px;
+        margin-bottom: 5px;
+        box-sizing: border-box; /* Fundamental para que el padding no desborde */
     }
 
+    /* 2. Aseguramos que la fecha sea compacta */
     .fecha-etiqueta {
         font-size: 0.7rem;
         white-space: nowrap;
-        flex-shrink: 0; 
         margin-right: 5px;
     }
 
+    /* 3. El contenedor de banderas ocupa el espacio restante */
     .duelo {
         display: flex;
         align-items: center;
         gap: 4px;
-        flex-shrink: 1;
-        min-width: 0; /* Permite que se encoja para no romper el layout */
+        flex-shrink: 0; /* Evita que las banderas se aplasten */
     }
 
+    /* 4. Tamaño fijo y pequeño para las banderas en mobile */
     .mini-flag {
         width: 22px; 
         height: 15px;
         object-fit: cover;
-        flex-shrink: 0;
+    }
+    
+    .vs-txt {
+        font-size: 0.6rem;
     }
 }
 
