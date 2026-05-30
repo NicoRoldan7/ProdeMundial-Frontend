@@ -1135,7 +1135,7 @@ main.contenedor[data-vista-activa="inicio"] .seccion-lista h2 {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        margin-left: -8px;
+        margin-left: -6px;
         
         /* ELIMINAMOS EL RECUADRO OSCURO */
         background-color: transparent !important; 
