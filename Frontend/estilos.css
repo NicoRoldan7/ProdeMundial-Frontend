@@ -1045,6 +1045,80 @@ main.contenedor[data-vista-activa="inicio"] .seccion-lista h2 {
     }
 }
 
+.contenedor-partidos-oculto {
+    margin: 10px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    font-size: 0.85rem;
+}
+.partido-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 8px;
+}
+.btn-ver-fixture {
+    margin: 5px auto 15px auto;
+    width: 100%;
+    cursor: pointer;
+    background: #2FC2C2;
+    border: none;
+    padding: 5px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+.fecha-hora {
+    font-size: 0.75rem;
+    color: #2FC2C2; /* Un color que resalte */
+    font-weight: bold;
+}
+.cruces-banderas {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.mini-flag {
+    width: 30px;      /* Tamaño perfecto para el celu */
+    height: 30px;
+    object-fit: contain; /* Para que la bandera no se deforme */
+    border-radius: 4px;  /* Bordes redondeados sutiles */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+.vs-text {
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #888;
+}
+.partido-fila {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.fecha-etiqueta {
+    font-size: 0.7rem;
+    color: #fff;
+    font-weight: bold;
+    white-space: nowrap;
+    margin-right: 10px;
+}
+
+.duelo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.vs-txt {
+    font-size: 0.6rem;
+    color: #2FC2C2;
+}
+
 
 
 

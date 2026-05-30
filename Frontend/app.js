@@ -845,26 +845,23 @@ const contGrupos = document.getElementById("contenedor-grupos");
 // Función para cargar los datos del dashboard
 let cargando = false;
 async function cargarDashboardInicio() {
-    document.getElementById("titulo-dinamico").innerText = "Grupos y partidos en vivo";
     actualizarTitulo("inicio");
-    if (cargando) {
-        console.warn("Carga ignorada: ya hay una en proceso.");
-        return;
-    }
-    cargando = true; // Bloqueamos la entrada
-    console.log("Cargando grupos...");
-    console.time("carga"); // Cronómetro
+    if (cargando) return;
+    cargando = true;
+
     const contenedor = document.getElementById("contenedor-partidos");
-    if (!contenedor){
-        cargando = false; // Liberamos si falla
-        return;
-    }
+    if (!contenedor) { cargando = false; return; }
     contenedor.innerHTML = "";
+
     try {
-        const resEquipos = await fetch(`${BASE_URL}/equipos`);
-        if (!resEquipos.ok) throw new Error("Error al obtener los equipos");
+        // Pedimos datos
+        const [resEquipos, resPartidos] = await Promise.all([
+            fetch(`${BASE_URL}/equipos`),
+            fetch(`${BASE_URL}/partidos`)
+        ]);
         
         const equipos = await resEquipos.json();
+        const partidos = await resPartidos.json();
 
         // Agrupamos equipos
         const grupos = equipos.reduce((acc, equipo) => {
@@ -874,38 +871,101 @@ async function cargarDashboardInicio() {
             return acc;
         }, {});
 
-        // Creamos el grid
         const divGrid = document.createElement("div");
-        divGrid.className = "contenedor-grupos-grid"; // Esta clase es clave para el CSS
+        divGrid.className = "contenedor-grupos-grid";
         
         Object.keys(grupos).sort().forEach(nombreGrupo => {
             const divGrupo = document.createElement("div");
-            divGrupo.className = "tarjeta-grupo"; // Clase para el estilo de la tarjeta
+            divGrupo.className = "tarjeta-grupo";
             
-            // Inyectamos el título y la lista
+            // Título del grupo
             divGrupo.innerHTML = `<h3 class="titulo-grupo">${nombreGrupo}</h3>`;
             
+            // Lista de equipos
             const listaEquipos = document.createElement("ul");
             listaEquipos.className = "lista-equipos";
-            
             grupos[nombreGrupo].forEach(eq => {
                 listaEquipos.innerHTML += `
                     <li class="fila-pais">
-                        <img src="${eq.logoUrl}" class="bandera-equipo" alt="${eq.nombre}">
+                        <img src="${eq.logoUrl}" class="bandera-equipo" onerror="this.src='https://placehold.co/20?text=⚽'">
                         <span class="nombre-equipo">${eq.nombre}</span>
                     </li>`;
             });
-            
             divGrupo.appendChild(listaEquipos);
+
+            // --- SECCIÓN PARTIDOS ---
+            const btnVer = document.createElement("button");
+            btnVer.className = "btn-ver-fixture";
+            btnVer.innerText = "Ver Partidos";
+
+            const divPartidos = document.createElement("div");
+            divPartidos.className = "contenedor-partidos-oculto";
+            divPartidos.style.display = "none";
+
+            // Filtramos partidos del grupo
+            const partidosDelGrupo = partidos.filter(p => {
+                const local = equipos.find(e => e.id === p.localId);
+                return local && `Grupo ${local.grupo}` === nombreGrupo;
+            });
+
+            if (partidosDelGrupo.length > 0) {
+                partidosDelGrupo.sort((a, b) => {
+    return new Date(a.fecha) - new Date(b.fecha);
+});
+                // 1. LIMPIAR: Borramos lo anterior para no duplicar
+divPartidos.innerHTML = ""; 
+
+// 2. FILTRAR Y ORDENAR: (Fuera del bucle)
+const partidosValidos = partidosDelGrupo
+    .filter(p => p.fecha && p.fecha !== "--/--" && p.fecha !== "")
+    .sort((a, b) => {
+        const fechaA = a.fecha || "";
+        const fechaB = b.fecha || "";
+        const horaA = a.hora || "";
+        const horaB = b.hora || "";
+
+        if (fechaA !== fechaB) return fechaA.localeCompare(fechaB);
+        return horaA.localeCompare(horaB);
+    });
+
+// 3. DIBUJAR: Solo recorremos la lista ya lista
+partidosValidos.forEach(p => {
+    const local = equipos.find(e => e.id === p.localId);
+    const vis = equipos.find(e => e.id === p.visitanteId);
+
+    const fechaMostrar = p.fecha;
+    const horaMostrar = p.hora ? p.hora.substring(0, 5) : "--:--";
+
+    divPartidos.innerHTML += `
+        <div class="partido-fila">
+            <span class="fecha-etiqueta">${fechaMostrar} ${horaMostrar}</span>
+            <div class="duelo">
+                <img src="${local?.logoUrl}" class="mini-flag" alt="Local"> 
+                <span class="vs-txt">VS</span> 
+                <img src="${vis?.logoUrl}" class="mini-flag" alt="Visitante">
+            </div>
+        </div>`;
+});
+            } else {
+                divPartidos.innerHTML = "<p>No hay partidos cargados.</p>";
+            }
+
+            btnVer.onclick = () => {
+                const visible = divPartidos.style.display === "block";
+                divPartidos.style.display = visible ? "none" : "block";
+                btnVer.innerText = visible ? "Ver Partidos" : "Ocultar";
+            };
+
+            divGrupo.appendChild(btnVer);
+            divGrupo.appendChild(divPartidos);
             divGrid.appendChild(divGrupo);
         });
         
         contenedor.appendChild(divGrid);
     } catch (error) {
-        console.error("Error cargando grupos:", error);
-        contenedor.innerHTML = "<p>Error al cargar. Intentá de nuevo.</p>";
-    }finally {
-        cargando = false; // SIEMPRE liberamos el bloqueo al terminar
+        console.error("Error al cargar inicio:", error);
+    } finally {
+        cargando = false;
     }
 }
 
