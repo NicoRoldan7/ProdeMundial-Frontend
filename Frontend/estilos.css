@@ -1129,53 +1129,50 @@ main.contenedor[data-vista-activa="inicio"] .seccion-lista h2 {
 
 /* Esto se aplica solo en pantallas pequeñas (celulares) */
 @media (max-width: 600px) {
-    /* 1. Limpiamos el contenedor para que no tenga doble recuadro */
+    /* 1. Seleccionamos el recuadro "oscuro" que envuelve a los partidos y lo vaciamos */
     .partido-fila {
         display: flex;
         flex-direction: row;
-        justify-content: space-between; /* Fecha a la izquierda, banderas a la derecha */
+        justify-content: space-between;
         align-items: center;
-        background-color: rgba(255, 255, 255, 0.05); /* Fondo apenas visible */
+        margin-left: -8px;
         
-        /* Eliminamos bordes y sombras para que no haya 'doble recuadro' */
+        /* ELIMINAMOS EL RECUADRO OSCURO */
+        background-color: transparent !important; 
         border: none !important;
         box-shadow: none !important;
-        border-radius: 0; 
         
-        /* Ocupamos todo el ancho posible */
+        /* Ajustamos el espacio para que ocupe el ancho del grupo */
         width: 100%;
-        padding: 10px 5px;
+        padding: 10px 0; /* Sin padding lateral extra */
         margin-bottom: 5px;
-        box-sizing: border-box; /* Fundamental para que el padding no desborde */
+        box-sizing: border-box;
     }
 
-    /* 2. Aseguramos que la fecha sea compacta */
+    /* 2. Compactamos el texto de la fecha */
     .fecha-etiqueta {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
         white-space: nowrap;
         margin-right: 5px;
+        flex-shrink: 0;
     }
 
-    /* 3. El contenedor de banderas ocupa el espacio restante */
+    /* 3. Ajustamos el duelo para que no se salga */
     .duelo {
         display: flex;
         align-items: center;
         gap: 4px;
-        flex-shrink: 0; /* Evita que las banderas se aplasten */
+        flex-grow: 1; /* Esto le permite tomar el espacio libre */
+        justify-content: flex-end; /* Alinea a la derecha */
     }
 
-    /* 4. Tamaño fijo y pequeño para las banderas en mobile */
     .mini-flag {
-        width: 22px; 
+        width: 22px;
         height: 15px;
         object-fit: cover;
-    }
-    
-    .vs-txt {
-        font-size: 0.6rem;
+        flex-shrink: 0;
     }
 }
-
 
 
 
