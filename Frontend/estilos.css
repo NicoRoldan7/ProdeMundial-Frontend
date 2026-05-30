@@ -1135,7 +1135,7 @@ main.contenedor[data-vista-activa="inicio"] .seccion-lista h2 {
 
 @media (max-width: 480px) {
     .partido-fila {
-        padding: 8px 10px;
+        padding: 8px 5px;
     }
     .mini-flag {
         width: 25px; /* Ligeramente más chico para pantallas muy pequeñas */
