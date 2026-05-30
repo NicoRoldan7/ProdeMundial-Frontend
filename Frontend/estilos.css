@@ -1133,26 +1133,35 @@ main.contenedor[data-vista-activa="inicio"] .seccion-lista h2 {
     font-weight: bold;
 }
 
+/* Esto se aplica solo en pantallas pequeñas (celulares) */
 @media (max-width: 600px) {
     .partido-fila {
         display: flex;
-        flex-direction: row; /* Fuerza todo a una línea */
-        justify-content: space-between;
+        flex-direction: row !important; /* Fuerza la fila horizontal */
+        justify-content: space-between; /* Empuja la fecha a un lado y el duelo al otro */
         align-items: center;
         padding: 8px 10px;
     }
-    fecha-etiqueta {
-        font-size: 0.7rem; /* Un poco más pequeño para que no ocupe tanto */
-        margin-right: 5px;
+
+    .fecha-etiqueta {
+        font-size: 0.75rem;
+        /* Aseguramos que no salte de línea */
+        white-space: nowrap; 
+        margin-right: 8px;
     }
 
     .duelo {
-        gap: 5px; /* Menos espacio entre banderas y VS */
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 5px;
+        flex-shrink: 0; /* Evita que el bloque de banderas se aplaste */
     }
 
+    /* Ajuste fino de banderas para mobile */
     .mini-flag {
-        width: 25px; /* Un tamaño más cómodo para móvil */
-        height: 17px;
+        width: 24px;
+        height: 16px;
     }
 }
 
